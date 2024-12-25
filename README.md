@@ -14,12 +14,14 @@ A lightweight TUI for seamlessly switching environment variable values.
 ---
 
 ## Requirements
-- [Task](https://taskfile.dev/) runner  
+- [Task](https://taskfile.dev/) runner (for building from source)
 - Go 1.22+
 
 ---
 
-## Installation  
+## Installation
+
+### Build From Source
 1. Clone this repository:
 ```bash
 $ git clone https://github.com/masamerc/sevp.git
@@ -35,6 +37,11 @@ $ task install
 3. Install the shellhook for `zsh`:
 ```bash
 $ ./scripts/install.sh
+```
+
+### Go Install
+```
+$ go install github.com/masamerc/sevp@latest
 ```
 
 ## Usage
