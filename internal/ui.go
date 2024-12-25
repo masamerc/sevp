@@ -18,16 +18,20 @@ const (
 
 	defaultWidth = 30
 	listHeight   = 15
+
+	// TODO: support other types of environement variables
+	currentEnvType = "AWS_PROFILE"
 )
 
 var (
-	titleStyle        = lipgloss.NewStyle().MarginLeft(2).Bold(true)
-	itemStyle         = lipgloss.NewStyle().PaddingLeft(4)
-	selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color(hexBrightGreen)).Bold(true)
-	paginationStyle   = list.DefaultStyles().PaginationStyle.PaddingLeft(4)
-	helpStyle         = list.DefaultStyles().HelpStyle.PaddingLeft(4).PaddingBottom(1).Foreground(lipgloss.Color(hexBrightPurpule))
-	quitTextStyle     = lipgloss.NewStyle().Margin(1, 0, 1, 4).Foreground(lipgloss.Color(hexBrightGreen))
-	plainTextStyle    = lipgloss.NewStyle().Margin(1, 0, 1, 4)
+	titleStyle          = lipgloss.NewStyle().MarginLeft(2).Bold(true)
+	itemStyle           = lipgloss.NewStyle().PaddingLeft(4)
+	selectedItemStyle   = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color(hexBrightGreen)).Bold(true)
+	selectedResultStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(hexBrightGreen)).Bold(true)
+	paginationStyle     = list.DefaultStyles().PaginationStyle.PaddingLeft(4)
+	helpStyle           = list.DefaultStyles().HelpStyle.PaddingLeft(4).PaddingBottom(1).Foreground(lipgloss.Color(hexBrightPurpule))
+	quitTextStyle       = lipgloss.NewStyle().Margin(1, 0, 1, 4)
+	plainTextStyle      = lipgloss.NewStyle().Margin(1, 0, 1, 4)
 
 	// Prompt
 	promptStyle       = lipgloss.NewStyle().MarginLeft(2).Foreground(lipgloss.Color(hexWhite)).Bold(true)
@@ -117,10 +121,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) View() string {
 	if m.choice != "" {
 		WriteToFile(m.choice)
-		return plainTextStyle.Render(fmt.Sprintf("Switched to: %s", m.choice))
+		return plainTextStyle.Render(
+			fmt.Sprintf(
+				"%s selected: %s",
+				currentEnvType,
+				selectedResultStyle.Render(m.choice),
+			),
+		)
 	}
 	if m.quitting {
-		return plainTextStyle.Render("Aborted.")
+		return quitTextStyle.Render("Aborted.")
 	}
 	return "\n" + m.list.View()
 }
