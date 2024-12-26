@@ -28,6 +28,12 @@ A lightweight TUI for seamlessly switching environment variable values.
 
 ## Installation
 
+### One-liner
+1. Run the one-liner:
+```bash
+$ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install.sh | sh
+```
+
 ### Build From Source
 1. Clone this repository:
 ```bash
@@ -66,7 +72,7 @@ $ sevp
 ## Todo
 - [x] CI
 - [x] automatic tagging & releasing
-- [ ] one-liner installation 
-- [ ] support installation via homebrew
+- [x] one-liner installation 
 - [x] support all commonly used shells
+- [ ] support installation via homebrew
 - [ ] support for other types of environment variables (currently only supports AWS_PROFILE)
