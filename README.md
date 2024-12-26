@@ -1,4 +1,7 @@
 # SEVP: **Simple Environment Variable Picker**  
+
+![SEVP](https://github.com/user-attachments/assets/00402040-99ff-4bdd-81ce-757b09fc62cc)
+
 A lightweight TUI for seamlessly switching environment variable values.
 
 > [!Important]
