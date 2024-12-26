@@ -74,5 +74,4 @@ $ sevp
 - [x] automatic tagging & releasing
 - [x] one-liner installation 
 - [x] support all commonly used shells
-- [ ] support installation via homebrew
 - [ ] support for other types of environment variables (currently only supports AWS_PROFILE)
