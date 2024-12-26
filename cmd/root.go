@@ -5,12 +5,13 @@ import (
 	"os"
 
 	"github.com/masamerc/sevp/internal"
+	"github.com/masamerc/sevp/internal/app"
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
 	Use:     "sevp",
-	Version: "0.1.0",
+	Version: "0.1.1",
 	Short:   "sevp: pick and switch environement variables.",
 	Long:    `sevp: pick and switch environement variables.`,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -27,7 +28,8 @@ var rootCmd = &cobra.Command{
 		)
 
 		profiles := internal.GetProfiles(contents)
-		internal.Run(profiles)
+		app := app.NewApp(profiles)
+		app.Run()
 	},
 }
 
