@@ -6,7 +6,11 @@ A lightweight TUI for seamlessly switching environment variable values.
 
 > [!Important]
 > SEVP is a work in progress and **currently supports only `AWS_PROFILE`**.  
-> Compatibility is limited to `zsh` at this stage.
+> This program uses a shellhook to set the environment variable for the current shell and currently supports
+> - `zsh`
+> - `bash`
+> - `fish`
+> - `nu`
 
 ---
 
@@ -37,9 +41,9 @@ $ task install
 ```
 
 
-3. Install the shellhook for `zsh`:
+3. Install the shellhook for your shell:
 ```bash
-$ ./scripts/install.sh
+$ ./scripts/install_shellhook.sh
 ```
 
 ### Go Install
@@ -48,9 +52,9 @@ $ ./scripts/install.sh
 $ go install github.com/masamerc/sevp@latest
 ```
 
-2. Install the shellhook for `zsh`:
+2. Install the shellhook for shell:
 ```bash
-$ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install.sh | sh
+$ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install_shellhook.sh | sh
 ```
 
 ## Usage
@@ -64,5 +68,5 @@ $ sevp
 - [x] automatic tagging & releasing
 - [ ] one-liner installation 
 - [ ] support installation via homebrew
-- [ ] support other shells than zsh
+- [x] support all commonly used shells
 - [ ] support for other types of environment variables (currently only supports AWS_PROFILE)
