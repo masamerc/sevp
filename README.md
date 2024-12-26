@@ -60,7 +60,7 @@ $ sevp
 ```
 
 ## Todo
-- [ ] CI
+- [x] CI
 - [x] automatic tagging & releasing
 - [ ] one-liner installation 
 - [ ] support installation via homebrew
