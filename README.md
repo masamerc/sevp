@@ -58,7 +58,7 @@ $ ./scripts/install_shellhook.sh
 $ go install github.com/masamerc/sevp@latest
 ```
 
-2. Install the shellhook for shell:
+2. Install the shellhook for your shell:
 ```bash
 $ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install_shellhook.sh | sh
 ```
