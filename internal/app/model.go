@@ -31,7 +31,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		switch key := msg.String(); key {
-		case "ctrl+c", "q", "esc":
+		case "ctrl+c":
 			m.quitting = true
 			return m, tea.Quit
 		case "enter":
@@ -40,6 +40,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if ok {
 					m.choice = string(i)
 				}
+				return m, tea.Quit
+			}
+		default:
+			if !m.list.SettingFilter() && (key == "q" || key == "esc") {
+				m.quitting = true
 				return m, tea.Quit
 			}
 		}
