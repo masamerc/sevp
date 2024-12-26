@@ -40,8 +40,14 @@ $ ./scripts/install.sh
 ```
 
 ### Go Install
+1. Run `go install`:
 ```
 $ go install github.com/masamerc/sevp@latest
+```
+
+2. Install the shellhook for `zsh`:
+```bash
+$ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install.sh | sh
 ```
 
 ## Usage
