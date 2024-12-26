@@ -16,7 +16,7 @@ A lightweight TUI for seamlessly switching environment variable values.
 
 ## Features
 
-![SEVP_DEMO](./assets/sevp_demo.gif)
+![SEVP_DEMO](./assets/sevp-demo.gif)
 
 - A TUI for quickly switching environment variable values for `AWS_PROFILE` which persists in the current shell.
 - Search through a list of AWS profiles declared in `~/.aws/config`.
