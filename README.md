@@ -72,4 +72,4 @@ $ sevp
 - [x] one-liner installation 
 - [x] support all commonly used shells
 - [ ] support for other types of environment variables (currently only supports AWS_PROFILE)
-- [ ] web docs
+- [ ] wiki docs
