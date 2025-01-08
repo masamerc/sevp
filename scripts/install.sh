@@ -35,7 +35,7 @@ case "$arch" in
     x86_64)
         TARGET_ARCH="amd64"
     ;;
-    aarch64)
+    arm64)
         TARGET_ARCH="arm64"
     ;;
     *)
