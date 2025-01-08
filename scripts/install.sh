@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -eo pipefail
 
@@ -79,7 +79,7 @@ fi
 echo
 echo "[SHELLHOOK INSTALLATION]"
 echo "Installing shellhook..."
-curl -sSL https://raw.githubusercontent.com/masamerc/sevp/${RELEASE_BRANCH}/scripts/install_shellhook.sh | sh
+curl -sSL https://raw.githubusercontent.com/masamerc/sevp/${RELEASE_BRANCH}/scripts/install_shellhook.sh | bash
 
 echo
 echo "Re-launch your shell to start using sevp!"
