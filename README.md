@@ -34,7 +34,7 @@ A lightweight TUI for seamlessly switching environment variable values.
 ### One-liner (requires `bash`)
 1. Run the one-liner:
 ```bash
-$ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install.sh | sh
+$ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install.sh | bash
 ```
 
 ### Build From Source
@@ -57,7 +57,7 @@ $ go install github.com/masamerc/sevp@latest
 
 2. Install the shellhook for your shell:
 ```bash
-$ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install_shellhook.sh | sh
+$ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install_shellhook.sh | bash
 ```
 
 ## Usage
