@@ -4,6 +4,7 @@ tasks:
   install:
     cmds:
       - go install -ldflags "-s -w"
+      - ./scripts/install_shellhook.sh
     silent: true
 
   build:
