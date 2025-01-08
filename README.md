@@ -23,7 +23,7 @@ A lightweight TUI for seamlessly switching environment variable values.
 
 ---
 
-## Requirements
+## Requirements (for building from source)
 - [Task](https://taskfile.dev/) runner (for building from source)
 - Go 1.22+
 
@@ -31,7 +31,7 @@ A lightweight TUI for seamlessly switching environment variable values.
 
 ## Installation
 
-### One-liner
+### One-liner (requires `bash`)
 1. Run the one-liner:
 ```bash
 $ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install.sh | sh
