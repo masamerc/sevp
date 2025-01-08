@@ -7,10 +7,10 @@ A lightweight TUI for seamlessly switching environment variable values.
 > [!Important]
 > SEVP is a work in progress and **currently supports only `AWS_PROFILE`**.  
 > This program uses a shellhook to set the environment variable for the current shell and currently supports
-> - `zsh`
-> - `bash`
-> - `fish`
-> - `nu`
+> - `zsh` (tested)
+> - `bash` (tested)
+> - `fish` (not tested)
+> - `nu` (not tested)
 
 ---
 
@@ -49,12 +49,6 @@ $ cd sevp
 $ task install
 ```
 
-
-3. Install the shellhook for your shell:
-```bash
-$ ./scripts/install_shellhook.sh
-```
-
 ### Go Install
 1. Run `go install`:
 ```
@@ -78,3 +72,4 @@ $ sevp
 - [x] one-liner installation 
 - [x] support all commonly used shells
 - [ ] support for other types of environment variables (currently only supports AWS_PROFILE)
+- [ ] web docs
