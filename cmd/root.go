@@ -29,7 +29,12 @@ var rootCmd = &cobra.Command{
 
 		profiles := internal.GetProfiles(contents)
 		app := app.NewApp(profiles)
-		app.Run()
+
+		err = app.Run()
+		internal.FailOnError(
+			"Error running app",
+			err,
+		)
 	},
 }
 
