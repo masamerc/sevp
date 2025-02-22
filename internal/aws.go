@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -35,6 +36,9 @@ func GetConfigFile() (string, error) {
 //   - string: The file's contents as a string.
 //   - error: An error if the file cannot be opened or read.
 func ReadContents(filePath string) (string, error) {
+	// sanitize the file path
+	filePath = filepath.Clean(filePath)
+
 	file, err := os.Open(filePath)
 	if err != nil {
 		slog.Debug("Error opening file", "path", filePath, "err", err)

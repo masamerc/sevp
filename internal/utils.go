@@ -59,7 +59,9 @@ func WriteToFile(value string, target string) {
 		FailOnError("Error getting user's home directory", err)
 	}
 
-	filePath := filepath.Join(userHome, FileName)
+	// sanitize the file path
+	filePath := filepath.Clean(filepath.Join(userHome, FileName))
+
 	f, err := os.Create(filePath)
 	if err != nil {
 		slog.Debug("Error creating file", "path", filePath, "err", err)
