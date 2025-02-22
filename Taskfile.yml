@@ -11,3 +11,8 @@ tasks:
     cmds:
       - go build -ldflags "-s -w" -o target/sevp
     silent: true
+
+  scan:
+    cmds:
+      - gosec ./...
+    silent: true
