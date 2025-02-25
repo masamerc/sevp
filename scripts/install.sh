@@ -75,11 +75,11 @@ else
   exit 1
 fi
 
-# install shellhook
-echo
-echo "[SHELLHOOK INSTALLATION]"
-echo "Installing shellhook..."
-curl -sSL https://raw.githubusercontent.com/masamerc/sevp/${RELEASE_BRANCH}/scripts/install_shellhook.sh | bash
-
-echo
-echo "Re-launch your shell to start using sevp!"
+# instruct user to add shellhook
+echo ""
+echo "[IMPORTANT]"
+echo "To enable shellhook, add the following line to your shellrc:"
+echo ""
+echo "    eval \"\$(sevp init <shell>)\"    "
+echo ""
+echo "Replace <shell> with your shell (bash, zsh, fish, nu.)"
