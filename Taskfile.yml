@@ -16,3 +16,8 @@ tasks:
     cmds:
       - gosec ./...
     silent: true
+
+  lint:
+    cmds:
+      - golangci-lint run
+    silent: true
