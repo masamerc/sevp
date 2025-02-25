@@ -8,6 +8,8 @@ on:
 jobs:
   lint-test:
     runs-on: ubuntu-latest
+    env:
+      GO111MODULE: on
 
     steps:
       - name: Checkout
