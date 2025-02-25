@@ -37,6 +37,11 @@ A lightweight TUI for seamlessly switching environment variable values.
 $ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install.sh | bash
 ```
 
+2. Add the shellhook to your shell config file:
+```bash
+eval "$(sevp init <shell>)"
+```
+
 ### Build From Source
 1. Clone this repository:
 ```bash
@@ -55,9 +60,9 @@ $ task install
 $ go install github.com/masamerc/sevp@latest
 ```
 
-2. Install the shellhook for your shell:
+2. Add the shellhook to your shell config file:
 ```bash
-$ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install_shellhook.sh | bash
+eval "$(sevp init <shell>)"
 ```
 
 ## Usage
