@@ -15,6 +15,12 @@ PLATFORMS=(
 # update the formula file
 echo "Updating formula to version $LATEST_VERSION..."
 
+
+# version
+sed -i.bak -E "s#(version \")[^\"]*\"#\1$LATEST_VERSION\"#" "$FORMULA_PATH"
+
+# url and sha256
+
 for PLATFORM in "${PLATFORMS[@]}"; do
   FILE_NAME="sevp_${LATEST_VERSION}_${PLATFORM}.tar.gz"
   URL="https://github.com/$REPO/releases/download/v$LATEST_VERSION/$FILE_NAME"
