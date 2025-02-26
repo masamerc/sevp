@@ -42,6 +42,23 @@ class Sevp < Formula
     end
   end
 
+  def caveats
+    <<~EOS
+      To get started with sevp, add the shellhook to your shell configuration:
+
+        eval "$(sevp init <shell>)"
+
+        for zsh:
+          echo 'eval "$(sevp init zsh)"' >> ~/.zshrc
+
+        for bash:
+          echo 'eval "$(sevp init bash)"' >> ~/.bashrc
+
+      For more details, visit the documentation:
+      https://github.com/masamerc/sevp
+    EOS
+  end
+
   test do
     system "#{bin}/sevp --version"
   end
