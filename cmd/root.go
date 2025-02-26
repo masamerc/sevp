@@ -11,7 +11,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:     "sevp",
-	Version: "0.0.4",
+	Version: "0.0.5",
 	Short:   "sevp: pick and switch environement variables.",
 	Long:    `sevp: pick and switch environement variables.`,
 	Run: func(cmd *cobra.Command, args []string) {
