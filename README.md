@@ -31,7 +31,7 @@ A lightweight TUI for seamlessly switching environment variable values.
 
 ## Installation
 
-### HomeBrew (macOS & Linux)
+### Homebrew (macOS & Linux)
 1. Tap the repository:
 ```bash
 $ brew tap masamerc/sevp https://github.com/masamerc/sevp.git
@@ -47,7 +47,7 @@ $ brew install sevp
 eval "$(sevp init <shell>)"
 ```
 
-### One-liner (requires `bash`)
+### Shell One-liner (requires `bash`)
 1. Run the one-liner:
 ```bash
 $ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install.sh | bash
@@ -58,7 +58,18 @@ $ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/
 eval "$(sevp init <shell>)"
 ```
 
-### Build From Source
+### Go Install
+1. Run `go install`:
+```
+$ go install github.com/masamerc/sevp@latest
+```
+
+2. Add the shellhook to your shell config file:
+```bash
+eval "$(sevp init <shell>)"
+```
+
+### Build from Source
 1. Clone this repository:
 ```bash
 $ git clone https://github.com/masamerc/sevp.git
@@ -70,13 +81,7 @@ $ cd sevp
 $ task install
 ```
 
-### Go Install
-1. Run `go install`:
-```
-$ go install github.com/masamerc/sevp@latest
-```
-
-2. Add the shellhook to your shell config file:
+3. Add the shellhook to your shell config file:
 ```bash
 eval "$(sevp init <shell>)"
 ```
