@@ -31,6 +31,22 @@ A lightweight TUI for seamlessly switching environment variable values.
 
 ## Installation
 
+### HomeBrew (macOS & Linux)
+1. Tap the repository:
+```bash
+$ brew tap masamerc/sevp https://github.com/masamerc/sevp.git
+```
+
+2. Install: 
+```bash
+$ brew install sevp
+```
+
+3. Add the shellhook to your shell config file:
+```bash
+eval "$(sevp init <shell>)"
+```
+
 ### One-liner (requires `bash`)
 1. Run the one-liner:
 ```bash
