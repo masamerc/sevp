@@ -55,6 +55,7 @@ func ParseConfig() {
 	err = viper.ReadInConfig()
 	if err != nil {
 		fmt.Println("Error reading config:", err)
+		// TODO: add better error handling
 		os.Exit(1)
 	}
 }
