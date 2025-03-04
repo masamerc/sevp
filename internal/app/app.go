@@ -13,7 +13,7 @@ type App struct {
 	target   string
 }
 
-func NewApp(items []string) *App {
+func NewApp(items []string, targetVar string) *App {
 	teaItems := make([]list.Item, len(items))
 	for i, itemString := range items {
 		teaItems[i] = Item(itemString)
@@ -21,7 +21,7 @@ func NewApp(items []string) *App {
 	return &App{
 		items:    items,
 		teaItems: teaItems,
-		target:   "AWS_PROFILE", // TODO: make this configurable
+		target:   targetVar,
 	}
 }
 

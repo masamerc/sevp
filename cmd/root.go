@@ -11,30 +11,60 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:     "sevp",
-	Version: "0.0.5",
+	Version: "0.1.0",
 	Short:   "sevp: pick and switch environement variables.",
 	Long:    `sevp: pick and switch environement variables.`,
+	Args: cobra.MatchAll(
+		cobra.MinimumNArgs(0),
+		cobra.MaximumNArgs(1),
+	),
 	Run: func(cmd *cobra.Command, args []string) {
-		configPath, err := internal.GetConfigFile()
-		internal.FailOnError(
-			"Error getting config file",
-			err,
-		)
+		if len(args) == 1 {
+			selectorChoice := args[0]
+			// config parse
+			selectors := internal.GetSelectors()
 
-		contents, err := internal.ReadContents(configPath)
-		internal.FailOnError(
-			"Error reading config file",
-			err,
-		)
+			// check if the selector exists in the map keys
+			if selector, ok := selectors[selectorChoice]; ok {
+				fmt.Println(selector.Name)
+				fmt.Println(selector.ReadConfig)
+				fmt.Println(selector.TargetVar)
+				fmt.Println(selector.PossibleValues)
 
-		profiles := internal.GetProfiles(contents)
-		app := app.NewApp(profiles)
+				app := app.NewApp(selector.PossibleValues, selector.TargetVar)
 
-		err = app.Run()
-		internal.FailOnError(
-			"Error running app",
-			err,
-		)
+				err := app.Run()
+
+				internal.FailOnError(
+					"Error running app",
+					err,
+				)
+			} else {
+				fmt.Println("Selector not found in config")
+			}
+		} else {
+			// default route
+			configPath, err := internal.GetConfigFile()
+			internal.FailOnError(
+				"Error getting config file",
+				err,
+			)
+
+			contents, err := internal.ReadContents(configPath)
+			internal.FailOnError(
+				"Error reading config file",
+				err,
+			)
+
+			profiles := internal.GetProfiles(contents)
+			app := app.NewApp(profiles, "AWS_PROFILE")
+
+			err = app.Run()
+			internal.FailOnError(
+				"Error running app",
+				err,
+			)
+		}
 	},
 }
 
@@ -50,22 +80,8 @@ func init() {
 }
 
 func initConfig() {
-	// TODO: config support
-
-	// configFile = ".cobra-cli-samples.yml"
-	// viper.SetConfigType("yaml")
-	// viper.SetConfigFile(configFile)
-	//
-	// viper.AutomaticEnv()
-	// viper.SetEnvPrefix("COBRACLISAMPLES")
-	// helper.HandleError(viper.BindEnv("API_KEY"))
-	// helper.HandleError(viper.BindEnv("API_SECRET"))
-	// helper.HandleError(viper.BindEnv("USERNAME"))
-	// helper.HandleError(viper.BindEnv("PASSWORD"))
-	//
-	// if err := viper.ReadInConfig(); err == nil {
-	// 	fmt.Println("Using configuration file: ", viper.ConfigFileUsed())
-	// }
+	// read in config
+	internal.ParseConfig()
 
 	// log settings
 	internal.InitLogger()
