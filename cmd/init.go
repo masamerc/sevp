@@ -19,10 +19,6 @@ var initCmd = &cobra.Command{
 			fmt.Println(internal.Bash{}.Hook())
 		case "zsh":
 			fmt.Println(internal.Zsh{}.Hook())
-		case "fish":
-			fmt.Println(internal.Fish{}.Hook())
-		case "nu":
-			fmt.Println(internal.Nu{}.Hook())
 		default:
 			fmt.Fprintf(os.Stderr, "Error: enter a valid shell: %v\n", internal.SupportedShells)
 			os.Exit(1)
