@@ -10,12 +10,24 @@ import (
 	"strings"
 )
 
+type AWSProfileSelector struct{}
+
+func (s *AWSProfileSelector) Out() (string, []string, error) {
+	targetVar := "AWS_PROFILE"
+	profiles, err := getAWSProfiles()
+	return targetVar, profiles, err
+}
+
+func NewAWSProfileSelector() *AWSProfileSelector {
+	return &AWSProfileSelector{}
+}
+
 // GetConfigFile retrieves the path to the AWS config file.
 //
 // Returns:
 //   - string: The full path to the AWS config file.
 //   - error: An error if the user's home directory cannot be determined.
-func GetConfigFile() (string, error) {
+func getAWSConfigFile() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		slog.Debug("Error getting home directory", "err", err)
@@ -35,7 +47,7 @@ func GetConfigFile() (string, error) {
 // Returns:
 //   - string: The file's contents as a string.
 //   - error: An error if the file cannot be opened or read.
-func ReadContents(filePath string) (string, error) {
+func readContents(filePath string) (string, error) {
 	// sanitize the file path
 	filePath = filepath.Clean(filePath)
 
@@ -62,7 +74,7 @@ func ReadContents(filePath string) (string, error) {
 //
 // Returns:
 //   - []string: A list of profile names found in the config file.
-func GetProfiles(contents string) []string {
+func parseProfiles(contents string) []string {
 	pattern := regexp.MustCompile(`\[(?:profile)?(.*?)\]`)
 	matches := pattern.FindAllStringSubmatch(contents, -1)
 
@@ -77,4 +89,23 @@ func GetProfiles(contents string) []string {
 	}
 
 	return result
+}
+
+// GetAWSProfiles retrieves a list of AWS profile names from the user's AWS config file.
+//
+// Returns:
+//   - []string: A list of AWS profile names.
+//   - error: An error if the AWS config file cannot be read.
+func getAWSProfiles() ([]string, error) {
+	configPath, err := getAWSConfigFile()
+	if err != nil {
+		return nil, err
+	}
+
+	contents, err := readContents(configPath)
+	if err != nil {
+		return nil, err
+	}
+
+	return parseProfiles(contents), nil
 }
