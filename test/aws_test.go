@@ -16,7 +16,7 @@ func TestGetConfigFile(t *testing.T) {
 	tempDir := t.TempDir()
 	os.Setenv("HOME", tempDir)
 
-	configPath, err := internal.GetConfigFile()
+	configPath, err := internal.GetAWSConfigFile()
 
 	assert.NoError(t, err, "expected no error getting config file")
 	expectedPath := path.Join(tempDir, ".aws", "config")
@@ -68,7 +68,7 @@ func TestGetProfiles(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := internal.GetProfiles(test.contents)
+			result := internal.ParseProfiles(test.contents)
 			assert.Equal(t, test.expected, result, "profile list should match expected")
 		})
 	}
