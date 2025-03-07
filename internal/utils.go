@@ -13,6 +13,15 @@ const (
 	FileName = ".sevp"
 )
 
+// / Fail logs the message and exits the program with a non-zero status code.
+// /
+// / Parameters:
+// /   - msg: The error message to log.
+func Fail(msg string) {
+	fmt.Println(msg)
+	os.Exit(1)
+}
+
 // FailOnError logs the error message and exits the program if an error is encountered.
 //
 // Parameters:
@@ -20,8 +29,7 @@ const (
 //   - err: The error to log and handle.
 func FailOnError(msg string, err error) {
 	if err != nil {
-		slog.Error(err.Error())
-		fmt.Println(msg)
+		fmt.Printf("%s: %s\n", msg, err)
 		os.Exit(1)
 	}
 }
@@ -36,7 +44,7 @@ func FailOnError(msg string, err error) {
 func InitLogger() {
 	// log settings
 	logLevelString := os.Getenv("SEVP_LOG_LEVEL")
-	if logLevelString != "" {
+	if logLevelString == "" {
 		logLevelString = "info"
 	}
 	switch logLevelString {
@@ -54,11 +62,10 @@ func InitLogger() {
 // Parameters:
 //   - value: The value of the environment variable.
 //   - target: The name of the environment variable.
-func WriteToFile(value string, target string) {
+func WriteToFile(value string, target string) error {
 	userHome, err := os.UserHomeDir()
 	if err != nil {
-		slog.Debug("Error getting user's home directory", "err", err)
-		FailOnError("Error getting user's home directory", err)
+		return err
 	}
 
 	filePath := filepath.Clean(filepath.Join(userHome, FileName))
@@ -67,8 +74,7 @@ func WriteToFile(value string, target string) {
 	var lines []string
 	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
-		slog.Debug("Error opening file", "path", filePath, "err", err)
-		FailOnError("Error opening file", err)
+		return err
 	}
 
 	scanner := bufio.NewScanner(file)
@@ -78,8 +84,7 @@ func WriteToFile(value string, target string) {
 	file.Close() // Close file after reading
 
 	if err := scanner.Err(); err != nil {
-		slog.Debug("Error scanning file", "path", filePath, "err", err)
-		FailOnError("Error scanning file", err)
+		return err
 	}
 
 	// Check if target exists and overwrite or append
@@ -99,8 +104,7 @@ func WriteToFile(value string, target string) {
 	// Write updated content back to file
 	file, err = os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644) // Open for writing, truncate
 	if err != nil {
-		slog.Debug("Error opening file for writing", "path", filePath, "err", err)
-		FailOnError("Error opening file for writing", err)
+		return err
 	}
 	defer file.Close()
 
@@ -108,15 +112,15 @@ func WriteToFile(value string, target string) {
 	for _, line := range lines {
 		_, err := writer.WriteString(line + "\n")
 		if err != nil {
-			slog.Debug("Error writing to file", "path", filePath, "err", err)
-			FailOnError("Error writing to file", err)
+			return err
 		}
 	}
 
 	if err := writer.Flush(); err != nil {
-		slog.Debug("Error flushing writer", "path", filePath, "err", err)
-		FailOnError("Error flushing writer", err)
+		return err
 	}
 
 	slog.Debug("Wrote environment variable to file", "path", filePath, "var", target, "value", value)
+
+	return nil
 }
