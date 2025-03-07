@@ -2,70 +2,67 @@ package cmd
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 
 	"github.com/masamerc/sevp/internal"
 	"github.com/masamerc/sevp/internal/app"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var rootCmd = &cobra.Command{
-	Use:     "sevp",
+	Use:     "sevp [command]",
 	Version: "0.1.0",
 	Short:   "sevp: pick and switch environement variables.",
-	Long:    `sevp: pick and switch environement variables.`,
 	Args: cobra.MatchAll(
 		cobra.MinimumNArgs(0),
 		cobra.MaximumNArgs(1),
 	),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 1 {
-			selectorChoice := args[0]
-			// config parse
-			selectors := internal.GetSelectors()
+		var selector internal.Selector
 
-			// check if the selector exists in the map keys
-			if selector, ok := selectors[selectorChoice]; ok {
-				fmt.Println(selector.Name)
-				fmt.Println(selector.ReadConfig)
-				fmt.Println(selector.TargetVar)
-				fmt.Println(selector.PossibleValues)
+		if viper.ConfigFileUsed() != "" {
+			// config route
+			if len(args) == 1 {
+				selectorChoice := args[0]
 
-				app := app.NewApp(selector.PossibleValues, selector.TargetVar)
+				// config parse
+				selecotrSection, err := internal.FromConfig(selectorChoice)
+				internal.FailOnError("Failed to parse selectors", err)
+				selector = selecotrSection
 
-				err := app.Run()
-
-				internal.FailOnError(
-					"Error running app",
-					err,
-				)
 			} else {
-				fmt.Println("Selector not found in config")
+				defaultSelector := viper.GetString("default")
+				slog.Debug("default selector: " + defaultSelector)
+
+				selecotrSection, err := internal.FromConfig(defaultSelector)
+				internal.FailOnError("Failed to parse selectors", err)
+
+				if selecotrSection.ReadConfig && defaultSelector == "aws" {
+					selector = internal.NewAWSProfileSelector()
+				} else {
+					if selecotrSection.TargetVar == "" || len(selecotrSection.PossibleValues) == 0 {
+						internal.FailOnError("Error getting selectors", fmt.Errorf("missing target_var or possible_values"))
+					}
+					selector = selecotrSection
+				}
 			}
 		} else {
-			// default route
-			configPath, err := internal.GetConfigFile()
-			internal.FailOnError(
-				"Error getting config file",
-				err,
-			)
-
-			contents, err := internal.ReadContents(configPath)
-			internal.FailOnError(
-				"Error reading config file",
-				err,
-			)
-
-			profiles := internal.GetProfiles(contents)
-			app := app.NewApp(profiles, "AWS_PROFILE")
-
-			err = app.Run()
-			internal.FailOnError(
-				"Error running app",
-				err,
-			)
+			// no config -> aws config mode
+			selector = internal.NewAWSProfileSelector()
 		}
+
+		startApp(selector)
 	},
+}
+
+func startApp(s internal.Selector) {
+	targetVar, possibleValues, err := s.Out()
+	internal.FailOnError("Failed to parse selectors", err)
+	app := app.NewApp(possibleValues, targetVar)
+	err = app.Run()
+	internal.FailOnError("Failed to run app", err)
 }
 
 func Execute() {
@@ -80,9 +77,13 @@ func init() {
 }
 
 func initConfig() {
-	// read in config
-	internal.ParseConfig()
-
 	// log settings
 	internal.InitLogger()
+
+	// read in config
+	err := internal.ParseConfig()
+	if err != nil {
+		slog.Debug("Error parsing config", "err", err)
+		viper.SetDefault("default", "aws")
+	}
 }

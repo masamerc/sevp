@@ -2,31 +2,49 @@ package internal
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/spf13/viper"
 )
 
-type selectorMap map[string]*SelectorSection
+type Selector interface {
+	Out() (string, []string, error)
+}
 
-type SelectorSection struct {
+type configSelectorMap map[string]*ConfigSelector
+
+type ConfigSelector struct {
 	Name           string
 	ReadConfig     bool
 	TargetVar      string
 	PossibleValues []string
 }
 
-func fromConfig(name string) (*SelectorSection, error) {
+func (s *ConfigSelector) Out() (string, []string, error) {
+	return s.TargetVar, s.PossibleValues, nil
+}
+
+func (s *ConfigSelector) IntoDefault() (Selector, error) {
+	if s.Name == "aws" {
+		return &AWSProfileSelector{}, nil
+	} else {
+		return nil, fmt.Errorf("unknown selector: %s", s.Name)
+	}
+}
+
+func FromConfig(name string) (*ConfigSelector, error) {
 	readConfig := viper.GetBool(name + ".read_config")
 	targetVar := viper.GetString(name + ".target_var")
 	possibleValues := viper.GetStringSlice(name + ".possible_values")
 
-	if targetVar == "" || len(possibleValues) == 0 {
+	if (targetVar == "" || len(possibleValues) == 0) && !readConfig {
 		return nil, fmt.Errorf("missing target_var or possible_values")
 	}
 
-	return &SelectorSection{
+	return &ConfigSelector{
 		Name:           name,
 		ReadConfig:     readConfig,
 		TargetVar:      targetVar,
@@ -34,7 +52,7 @@ func fromConfig(name string) (*SelectorSection, error) {
 	}, nil
 }
 
-func ParseConfig() {
+func ParseConfig() error {
 	// Get the user's home directory
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -52,27 +70,50 @@ func ParseConfig() {
 	viper.AddConfigPath(home)                       // $HOME/sevp.toml
 
 	// Read in the config
-	err = viper.ReadInConfig()
-	if err != nil {
-		fmt.Println("Error reading config:", err)
-		// TODO: add better error handling
-		os.Exit(1)
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			slog.Debug("Config file not found")
+		} else {
+			slog.Debug("Error reading config", "err", err)
+		}
+
+		return err
 	}
+	slog.Debug("Config file read successfully", "path", viper.ConfigFileUsed())
+	return nil
 }
 
-func GetSelectors() selectorMap {
-	selectors := make(selectorMap)
+func GetSelectors() (configSelectorMap, error) {
+	selectors := make(configSelectorMap)
+	topLevelKeysSet := make(map[string]struct{})
+
 	for key := range viper.AllSettings() {
 		if key == "default" {
 			continue
 		}
-		s, err := fromConfig(key)
+		// Extract the top-level key efficiently
+		topLevelKey := strings.SplitN(key, ".", 2)[0]
+		topLevelKeysSet[topLevelKey] = struct{}{} // Store unique top-level keys
+
+		// Process selector configuration
+		s, err := FromConfig(key)
 		if err != nil {
-			fmt.Println("Error:", err)
-			os.Exit(1)
+			return nil, fmt.Errorf("error processing selector %s: %v", key, err)
 		}
 		selectors[key] = s
 	}
 
-	return selectors
+	return selectors, nil
+}
+
+func GetTargetSelector(selectorName string) (string, []string, error) {
+	selectorMap, err := GetSelectors()
+	if err != nil {
+		return "", nil, err
+	}
+	if selector, ok := selectorMap[selectorName]; ok {
+		return selector.TargetVar, selector.PossibleValues, nil
+	} else {
+		return "", nil, fmt.Errorf("selector %s not found", selectorName)
+	}
 }
