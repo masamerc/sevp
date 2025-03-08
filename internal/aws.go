@@ -27,7 +27,7 @@ func NewAWSProfileSelector() *AWSProfileSelector {
 // Returns:
 //   - string: The full path to the AWS config file.
 //   - error: An error if the user's home directory cannot be determined.
-func getAWSConfigFile() (string, error) {
+func GetAWSConfigFile() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		slog.Debug("Error getting home directory", "err", err)
@@ -97,7 +97,7 @@ func parseProfiles(contents string) []string {
 //   - []string: A list of AWS profile names.
 //   - error: An error if the AWS config file cannot be read.
 func getAWSProfiles() ([]string, error) {
-	configPath, err := getAWSConfigFile()
+	configPath, err := GetAWSConfigFile()
 	if err != nil {
 		return nil, err
 	}

@@ -15,7 +15,7 @@ func TestGetConfigFile(t *testing.T) {
 	tempDir := t.TempDir()
 	os.Setenv("HOME", tempDir)
 
-	configPath, err := getAWSConfigFile()
+	configPath, err := GetAWSConfigFile()
 
 	assert.NoError(t, err, "expected no error getting config file")
 	expectedPath := path.Join(tempDir, ".aws", "config")
