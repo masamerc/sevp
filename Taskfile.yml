@@ -17,6 +17,11 @@ tasks:
       - gosec ./...
     silent: true
 
+  test:
+    cmds:
+      - go test -v ./...
+    silent: true
+
   lint:
     cmds:
       - golangci-lint run
