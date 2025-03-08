@@ -55,7 +55,7 @@ func FromConfig(name string) (*ConfigSelector, error) {
 
 	if (targetVar == "" || len(possibleValues) == 0) && !readConfig {
 		return nil, fmt.Errorf(
-			"invalid selector: %s - either the selector is not in the config or the `target_var` or `possible_values` is not set for the selector",
+			"invalid selector: %s - either the selector is not in the config, the `target_var` or `possible_values` is not set for the selector or the config file is not found",
 			name,
 		)
 	}
