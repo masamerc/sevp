@@ -27,21 +27,37 @@ func (s *ConfigSelector) Out() (string, []string, error) {
 	return s.TargetVar, s.PossibleValues, nil
 }
 
-func (s *ConfigSelector) IntoDefault() (Selector, error) {
-	if s.Name == "aws" {
+// IntoExternalProviderSelector converts the config selector into a external provider selector
+// For example, the external provider selector for AWS will read profiles set in the AWS config (~/.aws/config)
+//
+// Returns:
+//   - Selector: The external provider selector
+func (s *ConfigSelector) IntoExternalProviderSelector() (Selector, error) {
+	switch s.Name {
+	case "aws":
 		return &AWSProfileSelector{}, nil
-	} else {
-		return nil, fmt.Errorf("unknown selector: %s", s.Name)
+	default:
+		return nil, fmt.Errorf("the external config provider is not supported for selector %s", s.Name)
 	}
 }
 
+// FromConfig creates a config selector from the viper config
+//
+// Args:
+//   - name: The name of the selector
+//
+// Returns:
+//   - *ConfigSelector: The config selector
 func FromConfig(name string) (*ConfigSelector, error) {
 	readConfig := viper.GetBool(name + ".read_config")
 	targetVar := viper.GetString(name + ".target_var")
 	possibleValues := viper.GetStringSlice(name + ".possible_values")
 
 	if (targetVar == "" || len(possibleValues) == 0) && !readConfig {
-		return nil, fmt.Errorf("missing target_var or possible_values")
+		return nil, fmt.Errorf(
+			"invalid selector: %s - either the selector is not in the config or the `target_var` or `possible_values` is not set for the selector",
+			name,
+		)
 	}
 
 	return &ConfigSelector{
@@ -52,6 +68,12 @@ func FromConfig(name string) (*ConfigSelector, error) {
 	}, nil
 }
 
+// ParseConfig reads in the config file.
+// Viper looks for the config in $HOME/.config/sevp.toml and $HOME/sevp.toml.
+// $Home/.config/sevp.toml takes precedence over $HOME/sevp.toml if both exist.
+//
+// Returns:
+//   - error: An error if the config file cannot be read
 func ParseConfig() error {
 	// Get the user's home directory
 	home, err := os.UserHomeDir()
@@ -104,16 +126,4 @@ func GetSelectors() (configSelectorMap, error) {
 	}
 
 	return selectors, nil
-}
-
-func GetTargetSelector(selectorName string) (string, []string, error) {
-	selectorMap, err := GetSelectors()
-	if err != nil {
-		return "", nil, err
-	}
-	if selector, ok := selectorMap[selectorName]; ok {
-		return selector.TargetVar, selector.PossibleValues, nil
-	} else {
-		return "", nil, fmt.Errorf("selector %s not found", selectorName)
-	}
 }

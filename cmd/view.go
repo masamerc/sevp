@@ -32,7 +32,7 @@ var viewCmd = &cobra.Command{
 
 			if selectorChosen, ok := selectorMap[selectorChoice]; ok {
 				if selectorChosen.ReadConfig {
-					selector, err = selectorChosen.IntoDefault()
+					selector, err = selectorChosen.IntoExternalProviderSelector()
 					internal.FailOnError("Failed to parse selectors", err)
 				} else {
 					selector = selectorChosen
