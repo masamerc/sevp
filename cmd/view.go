@@ -13,6 +13,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+// view command will display the details of a selector.
+// if no config is found, it will default to AWS profiles.
 var viewCmd = &cobra.Command{
 	Use:   "view <selector>",
 	Short: "Check the possible values of a selector",
@@ -21,7 +23,7 @@ var viewCmd = &cobra.Command{
 		var selector internal.Selector
 
 		if viper.ConfigFileUsed() == "" {
-			// no config
+			// no config -> default to AWS
 			selector = internal.NewAWSProfileSelector()
 		} else {
 			// config found
@@ -41,23 +43,22 @@ var viewCmd = &cobra.Command{
 				internal.FailOnError("Selector not found", fmt.Errorf("selector %s not found", selectorChoice))
 			}
 		}
-		displaySelectorInfo(selector)
+
+		// read the content of the selector
+		targetVar, possibleValues, err := selector.Read()
+		internal.FailOnError("Failed to parse selectors", err)
+
+		// some styling for the stdout
+		purpleStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(app.HexBrightPurple))
+		greenSytle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(app.HexBrightGreen))
+
+		// display
+		fmt.Printf("\ntarget environment variable:\n  %s\n", purpleStyle.Render(targetVar))
+		fmt.Println("\npossible values:")
+		for _, v := range possibleValues {
+			fmt.Printf("  - %s\n", greenSytle.Render(v))
+		}
 	},
-}
-
-func displaySelectorInfo(s internal.Selector) {
-	targetVar, possibleValues, err := s.Read()
-	internal.FailOnError("Failed to parse selectors", err)
-
-	purpleStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(app.HexBrightPurple))
-	greenSytle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(app.HexBrightGreen))
-
-	fmt.Printf("\ntarget environment variable:\n  %s\n", purpleStyle.Render(targetVar))
-	fmt.Println("\npossible values:")
-
-	for _, v := range possibleValues {
-		fmt.Printf("  - %s\n", greenSytle.Render(v))
-	}
 }
 
 func init() {

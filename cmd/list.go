@@ -8,6 +8,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// list command will list all selectors in the config.
+// list command will only work if a config is found
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List available selectors",
@@ -21,6 +23,7 @@ var listCmd = &cobra.Command{
 			selectorSlice = append(selectorSlice, k)
 		}
 
+		// sort the selectors since the map order is not guaranteed
 		sorted := sort.StringSlice(selectorSlice)
 		sort.Sort(sorted)
 

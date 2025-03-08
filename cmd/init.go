@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// init command will print out a shell hook for the supported shells.
 var initCmd = &cobra.Command{
 	Use:       "init <shell>",
 	Short:     fmt.Sprintf("Prints out a shell-init for the input shell. Supported shells: %v", internal.SupportedShells),

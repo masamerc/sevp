@@ -86,4 +86,24 @@ func initConfig() {
 		slog.Debug("Error parsing config", "err", err)
 		viper.SetDefault("default", "aws")
 	}
+
+	// check for AWS config
+	path, err := internal.GetAWSConfigFile()
+	if err != nil {
+		slog.Debug("Error getting AWS config path", "err", err)
+	}
+
+	// check if the AWS config file exists
+	_, err = os.Stat(path)
+
+	// if both aws config and sevp coinfig are missing, exit.
+	// this is because if we have the aws config the aws selector will at least work,
+	// and if we have the sevp config, the app will work without aws config
+	if err != nil && viper.ConfigFileUsed() == "" {
+		if os.IsNotExist(err) {
+			internal.FailOnError("AWS config file not found", err)
+		} else {
+			internal.FailOnError("Error checking AWS config file", err)
+		}
+	}
 }
