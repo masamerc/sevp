@@ -106,6 +106,10 @@ func ParseConfig() error {
 }
 
 func GetSelectors() (configSelectorMap, error) {
+	if viper.ConfigFileUsed() == "" {
+		return nil, fmt.Errorf("no config file found")
+	}
+
 	selectors := make(configSelectorMap)
 	topLevelKeysSet := make(map[string]struct{})
 
