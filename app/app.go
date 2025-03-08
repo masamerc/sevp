@@ -31,15 +31,15 @@ func (a *App) Run() error {
 
 	l := list.New(a.teaItems, NewItemDelegate(), DefaultWidth, ListHeight)
 
-	// Title setting
+	// title setting
 	title := fmt.Sprintf("[%s]\n\ntype '/' to search", renderStyles.TargetType.Render(a.target))
 	l.Title = title
 
-	// General settings
+	// general settings
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(true)
 
-	// List styling
+	// list styling
 	l.Styles.Title = listStyles.Styles.Title
 	l.Styles.HelpStyle = listStyles.Styles.HelpStyle
 	l.FilterInput.Prompt = "Search: "

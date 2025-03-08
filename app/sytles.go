@@ -8,7 +8,6 @@ import (
 const (
 	HexWhite        = "#FFFFFF"
 	HexBrightPurple = "#B198E5"
-	HexDarkPurple   = "#4D1A7F"
 	HexBrightGreen  = "#3CCE92"
 
 	DefaultWidth = 30
