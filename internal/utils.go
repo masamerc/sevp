@@ -70,7 +70,7 @@ func WriteToFile(value string, target string) error {
 
 	filePath := filepath.Clean(filepath.Join(userHome, FileName))
 
-	// Read existing file content
+	// read existing file content
 	var lines []string
 	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
@@ -81,13 +81,13 @@ func WriteToFile(value string, target string) error {
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
 	}
-	file.Close() // Close file after reading
+	file.Close() // close file after reading
 
 	if err := scanner.Err(); err != nil {
 		return err
 	}
 
-	// Check if target exists and overwrite or append
+	// check if target exists and overwrite or append
 	targetFound := false
 	for i, line := range lines {
 		if strings.HasPrefix(line, fmt.Sprintf("export %s=", target)) {
@@ -101,8 +101,8 @@ func WriteToFile(value string, target string) error {
 		lines = append(lines, fmt.Sprintf("export %s=%s", target, value))
 	}
 
-	// Write updated content back to file
-	file, err = os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644) // Open for writing, truncate
+	// write updated content back to file
+	file, err = os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644) // open for writing, truncate
 	if err != nil {
 		return err
 	}
