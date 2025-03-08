@@ -7,8 +7,8 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/masamerc/sevp/app"
 	"github.com/masamerc/sevp/internal"
-	"github.com/masamerc/sevp/internal/app"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
