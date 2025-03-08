@@ -11,7 +11,7 @@ import (
 )
 
 type Selector interface {
-	Out() (string, []string, error)
+	Read() (string, []string, error)
 }
 
 type configSelectorMap map[string]*ConfigSelector
@@ -23,7 +23,7 @@ type ConfigSelector struct {
 	PossibleValues []string
 }
 
-func (s *ConfigSelector) Out() (string, []string, error) {
+func (s *ConfigSelector) Read() (string, []string, error) {
 	return s.TargetVar, s.PossibleValues, nil
 }
 

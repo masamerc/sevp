@@ -12,7 +12,7 @@ import (
 
 type AWSProfileSelector struct{}
 
-func (s *AWSProfileSelector) Out() (string, []string, error) {
+func (s *AWSProfileSelector) Read() (string, []string, error) {
 	targetVar := "AWS_PROFILE"
 	profiles, err := getAWSProfiles()
 	return targetVar, profiles, err

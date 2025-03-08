@@ -46,7 +46,7 @@ var viewCmd = &cobra.Command{
 }
 
 func displaySelectorInfo(s internal.Selector) {
-	targetVar, possibleValues, err := s.Out()
+	targetVar, possibleValues, err := s.Read()
 	internal.FailOnError("Failed to parse selectors", err)
 
 	purpleStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(app.HexBrightPurple))

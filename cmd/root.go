@@ -58,7 +58,7 @@ var rootCmd = &cobra.Command{
 }
 
 func startApp(s internal.Selector) {
-	targetVar, possibleValues, err := s.Out()
+	targetVar, possibleValues, err := s.Read()
 	internal.FailOnError("Failed to parse selectors", err)
 	app := app.NewApp(possibleValues, targetVar)
 	err = app.Run()
