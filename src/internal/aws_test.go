@@ -1,11 +1,10 @@
-package tests
+package internal
 
 import (
 	"os"
 	"path"
 	"testing"
 
-	"github.com/masamerc/sevp/internal"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,7 +15,7 @@ func TestGetConfigFile(t *testing.T) {
 	tempDir := t.TempDir()
 	os.Setenv("HOME", tempDir)
 
-	configPath, err := internal.GetConfigFile()
+	configPath, err := GetAWSConfigFile()
 
 	assert.NoError(t, err, "expected no error getting config file")
 	expectedPath := path.Join(tempDir, ".aws", "config")
@@ -31,7 +30,7 @@ func TestReadContents(t *testing.T) {
 	err := os.WriteFile(filePath, []byte(content), 0644)
 	assert.NoError(t, err, "failed to create test file")
 
-	result, err := internal.ReadContents(filePath)
+	result, err := readContents(filePath)
 	assert.NoError(t, err, "expected no error reading file contents")
 	assert.Equal(t, content, result, "file content should match")
 }
@@ -68,7 +67,7 @@ func TestGetProfiles(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := internal.GetProfiles(test.contents)
+			result := parseProfiles(test.contents)
 			assert.Equal(t, test.expected, result, "profile list should match expected")
 		})
 	}

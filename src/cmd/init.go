@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/masamerc/sevp/internal"
+	"github.com/masamerc/sevp/src/internal"
 	"github.com/spf13/cobra"
 )
 
+// init command will print out a shell hook for the supported shells.
 var initCmd = &cobra.Command{
 	Use:       "init <shell>",
 	Short:     fmt.Sprintf("Prints out a shell-init for the input shell. Supported shells: %v", internal.SupportedShells),
@@ -19,10 +20,6 @@ var initCmd = &cobra.Command{
 			fmt.Println(internal.Bash{}.Hook())
 		case "zsh":
 			fmt.Println(internal.Zsh{}.Hook())
-		case "fish":
-			fmt.Println(internal.Fish{}.Hook())
-		case "nu":
-			fmt.Println(internal.Nu{}.Hook())
 		default:
 			fmt.Fprintf(os.Stderr, "Error: enter a valid shell: %v\n", internal.SupportedShells)
 			os.Exit(1)

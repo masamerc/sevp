@@ -13,7 +13,7 @@ type App struct {
 	target   string
 }
 
-func NewApp(items []string) *App {
+func NewApp(items []string, targetVar string) *App {
 	teaItems := make([]list.Item, len(items))
 	for i, itemString := range items {
 		teaItems[i] = Item(itemString)
@@ -21,7 +21,7 @@ func NewApp(items []string) *App {
 	return &App{
 		items:    items,
 		teaItems: teaItems,
-		target:   "AWS_PROFILE", // TODO: make this configurable
+		target:   targetVar,
 	}
 }
 
@@ -31,15 +31,15 @@ func (a *App) Run() error {
 
 	l := list.New(a.teaItems, NewItemDelegate(), DefaultWidth, ListHeight)
 
-	// Title setting
+	// title setting
 	title := fmt.Sprintf("[%s]\n\ntype '/' to search", renderStyles.TargetType.Render(a.target))
 	l.Title = title
 
-	// General settings
+	// general settings
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(true)
 
-	// List styling
+	// list styling
 	l.Styles.Title = listStyles.Styles.Title
 	l.Styles.HelpStyle = listStyles.Styles.HelpStyle
 	l.FilterInput.Prompt = "Search: "

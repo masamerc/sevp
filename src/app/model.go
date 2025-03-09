@@ -5,7 +5,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/masamerc/sevp/internal"
+	"github.com/masamerc/sevp/src/internal"
 )
 
 type Model struct {
@@ -58,7 +58,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) View() string {
 	renderStyles := NewStyles().Rendering
 	if m.choice != "" {
-		internal.WriteToFile(m.choice, m.target)
+		err := internal.WriteToFile(m.choice, m.target)
+		if err != nil {
+			return renderStyles.QuitText.Render("Error writing to file: " + err.Error())
+		}
 		return renderStyles.PlainText.Render(
 			fmt.Sprintf(
 				"%s selected: %s",

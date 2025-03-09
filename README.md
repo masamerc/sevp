@@ -99,3 +99,8 @@ $ sevp
 - [x] support all commonly used shells
 - [ ] support for other types of environment variables (currently only supports AWS_PROFILE)
 - [ ] wiki docs
+
+
+### config TODO
+- [ ] `list` command
+- [ ] `list` command with `-v` flag

@@ -8,14 +8,12 @@ import (
 const (
 	HexWhite        = "#FFFFFF"
 	HexBrightPurple = "#B198E5"
-	HexDarkPurple   = "#4D1A7F"
 	HexBrightGreen  = "#3CCE92"
 
 	DefaultWidth = 30
 	ListHeight   = 15
 )
 
-// RenderingStyles defines styles used for rendering individual items or custom text.
 type RenderingStyles struct {
 	Item           lipgloss.Style
 	SelectedItem   lipgloss.Style
@@ -25,18 +23,15 @@ type RenderingStyles struct {
 	TargetType     lipgloss.Style
 }
 
-// ListStyles defines styles applied directly to the list.Model.
 type ListStyles struct {
 	Styles list.Styles
 }
 
-// Styles bundles both RenderingStyles and ListStyles for easy access.
 type Styles struct {
 	Rendering RenderingStyles
 	List      ListStyles
 }
 
-// NewStyles initializes and returns the full styles set.
 func NewStyles() *Styles {
 	return &Styles{
 		Rendering: RenderingStyles{
