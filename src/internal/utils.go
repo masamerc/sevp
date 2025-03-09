@@ -72,7 +72,7 @@ func WriteToFile(value string, target string) error {
 
 	// read existing file content
 	var lines []string
-	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0644)
+	file, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE, 0600)
 	if err != nil {
 		return err
 	}
@@ -81,7 +81,9 @@ func WriteToFile(value string, target string) error {
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
 	}
-	file.Close() // close file after reading
+	if err := file.Close(); err != nil {
+		return err
+	}
 
 	if err := scanner.Err(); err != nil {
 		return err
@@ -102,7 +104,7 @@ func WriteToFile(value string, target string) error {
 	}
 
 	// write updated content back to file
-	file, err = os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644) // open for writing, truncate
+	file, err = os.OpenFile(filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0600) // open for writing, truncate
 	if err != nil {
 		return err
 	}
