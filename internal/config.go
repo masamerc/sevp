@@ -101,6 +101,11 @@ func ParseConfig() error {
 
 		return err
 	}
+
+	if len(viper.AllSettings()) == 0 {
+		return fmt.Errorf("config file is empty")
+	}
+
 	slog.Debug("Config file read successfully", "path", viper.ConfigFileUsed())
 	return nil
 }
