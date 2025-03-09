@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/masamerc/sevp/internal"
+	"github.com/masamerc/sevp/src/internal"
 	"github.com/spf13/cobra"
 )
 

@@ -5,7 +5,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/masamerc/sevp/internal"
+	"github.com/masamerc/sevp/src/internal"
 )
 
 type Model struct {
