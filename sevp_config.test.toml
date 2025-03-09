@@ -1,0 +1,4 @@
+default = "aws"
+
+[aws]
+read_config = true
