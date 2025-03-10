@@ -1,6 +1,8 @@
 package internal
 
 import (
+	"os"
+	"path"
 	"strings"
 	"testing"
 
@@ -355,7 +357,18 @@ func TestUnitNoConfigFile(t *testing.T) {
 
 // ----- Integration Tests -----
 
-// dummy
 func TestIntegrationDummy(t *testing.T) {
-	t.Log("dummy")
+	// get user's home dir
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		t.Fatalf("Failed to get user's home directory: %v", err)
+	}
+
+	awsConfig := path.Join(homeDir, ".aws", "config")
+	t.Log("AWS config file:", awsConfig)
+
+	// check for existence
+	if _, err := os.Stat(awsConfig); os.IsNotExist(err) {
+		t.Fatalf("AWS config file not found: %v", err)
+	}
 }
