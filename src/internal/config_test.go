@@ -8,8 +8,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// ----- Unit Tests -----
+
 // parsed selectors should match expected
-func TestFromConfig(t *testing.T) {
+func TestUnitFromConfig(t *testing.T) {
 	configContent := `
 [aws]
 read_config = true
@@ -64,7 +66,7 @@ possible_values = ["value1", "value2"]
 }
 
 // parsed selectors should match expected
-func TestGetSelectors(t *testing.T) {
+func TestUnitGetSelectors(t *testing.T) {
 	configContent := `
 default = "aws"
 
@@ -106,7 +108,7 @@ possible_values = ["value1", "value2"]
 }
 
 // parsed default selector should match expected
-func TestDefaultSelector(t *testing.T) {
+func TestUnitDefaultSelector(t *testing.T) {
 	configContent := `
 default = "aws"
 
@@ -141,7 +143,7 @@ possible_values = ["default", "profile1", "profile2"]
 }
 
 // invalid configuration should cause an error with a specific error message
-func TestInvalidConfiguration(t *testing.T) {
+func TestUnitInvalidConfiguration(t *testing.T) {
 	tests := []struct {
 		name          string
 		configContent string
@@ -185,7 +187,7 @@ func TestInvalidConfiguration(t *testing.T) {
 }
 
 // automatic inference and type casting should work as expected
-func TestAutomaticInference(t *testing.T) {
+func TestUnitAutomaticInference(t *testing.T) {
 	configContent := `
 [test]
 target_var = "AWS_PROFILE"
@@ -208,7 +210,7 @@ possible_values = "val"
 	assert.False(t, s.ReadConfig, "read_config should be true")
 }
 
-func TestEmptyConfiguration(t *testing.T) {
+func TestUnitEmptyConfiguration(t *testing.T) {
 	tests := []struct {
 		name          string
 		configContent string
@@ -237,7 +239,7 @@ read_config = false
 }
 
 // edge cases should work as expected
-func TestEdgeCases(t *testing.T) {
+func TestUnitEdgeCases(t *testing.T) {
 	configContent := `
 
 [empty_values]
@@ -303,7 +305,7 @@ possible_values = ["value-with-dash", "value_with_underscore", "value with space
 }
 
 // when there are duplicate selectors in the config, the error message should mention the duplicate table
-func TestDuplicateSelectorsShouldNotBeParseable(t *testing.T) {
+func TestUnitDuplicateSelectorsShouldNotBeParseable(t *testing.T) {
 	configContent := `
 [duplicate]
 read_config = true
@@ -323,7 +325,7 @@ possible_values = ["second"]
 }
 
 // when the selector is not in the config, the error message should mention the missing selector
-func TestNonExistentSelector(t *testing.T) {
+func TestUnitNonExistentSelector(t *testing.T) {
 	configContent := `
 [existing]
 read_config = true
@@ -341,7 +343,7 @@ possible_values = ["value"]
 }
 
 // When no config file is found, the error message should mention the missing config file
-func TestNoConfigFile(t *testing.T) {
+func TestUnitNoConfigFile(t *testing.T) {
 	_, err := FromConfig("no config")
 	assert.Error(t, err, "expected error")
 	assert.Contains(t, err.Error(), "the config file is not found", "error should mention the missing config file")
@@ -349,4 +351,11 @@ func TestNoConfigFile(t *testing.T) {
 	_, err = GetSelectors()
 	assert.Error(t, err, "expected error")
 	assert.Contains(t, err.Error(), "no config file found", "error should mention the missing config file")
+}
+
+// ----- Integration Tests -----
+
+// dummy
+func TestIntegrationDummy(t *testing.T) {
+	t.Log("dummy")
 }

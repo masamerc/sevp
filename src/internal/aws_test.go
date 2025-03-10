@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetConfigFile(t *testing.T) {
+func TestUnitGetConfigFile(t *testing.T) {
 	originalHome := os.Getenv("HOME")
 	defer os.Setenv("HOME", originalHome)
 
@@ -22,7 +22,7 @@ func TestGetConfigFile(t *testing.T) {
 	assert.Equal(t, expectedPath, configPath, "config path should match expected path")
 }
 
-func TestReadContents(t *testing.T) {
+func TestUnitReadContents(t *testing.T) {
 	tempDir := t.TempDir()
 	filePath := path.Join(tempDir, "testfile.txt")
 
@@ -35,7 +35,7 @@ func TestReadContents(t *testing.T) {
 	assert.Equal(t, content, result, "file content should match")
 }
 
-func TestGetProfiles(t *testing.T) {
+func TestUnitGetProfiles(t *testing.T) {
 	tests := []struct {
 		name     string
 		contents string
