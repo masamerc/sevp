@@ -31,5 +31,3 @@ tasks:
     cmds:
       - golangci-lint run
     silent: true
-
-
