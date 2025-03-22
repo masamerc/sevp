@@ -6,4 +6,4 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-CMD ["sh", "tests/run_integration_tests.sh"]
+CMD ["sh", "integration_tests/run.sh"]
