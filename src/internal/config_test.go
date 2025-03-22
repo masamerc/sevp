@@ -357,8 +357,38 @@ func TestUnitNoConfigFile(t *testing.T) {
 
 // ----- Integration Tests -----
 
-func TestIntegrationDummy(t *testing.T) {
+func TestIntegrationCase1(t *testing.T) {
 	// get user's home dir
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		t.Fatalf("Failed to get user's home directory: %v", err)
+	}
+
+	awsConfig := path.Join(homeDir, ".aws", "config")
+
+	// check if file exists
+	if _, err := os.Stat(awsConfig); os.IsNotExist(err) {
+		t.Fatalf("AWS config file not found: %v", err)
+	}
+
+	// parse config
+	err = ParseConfig()
+	if err != nil {
+		t.Fatalf("Failed to parse config: %v", err)
+	}
+
+	// get selectors
+	selectors, err := GetSelectors()
+	if err != nil {
+		t.Fatalf("Failed to get selectors: %v", err)
+	}
+
+	t.Log("Selectors:", selectors)
+
+	assert.NotEmpty(t, selectors, "expected selectors to be not empty")
+}
+
+func TestIntegrationCase2(t *testing.T) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		t.Fatalf("Failed to get user's home directory: %v", err)
@@ -367,8 +397,31 @@ func TestIntegrationDummy(t *testing.T) {
 	awsConfig := path.Join(homeDir, ".aws", "config")
 	t.Log("AWS config file:", awsConfig)
 
-	// check for existence
-	if _, err := os.Stat(awsConfig); os.IsNotExist(err) {
-		t.Fatalf("AWS config file not found: %v", err)
+	err = ParseConfig()
+	assert.NoError(t, err, "expected no error")
+
+	_, _, err = NewAWSProfileSelector().Read()
+	t.Log("Error:", err)
+	assert.Error(t, err, "expected error")
+	assert.Contains(t, err.Error(), "no such file", "error should mention the missing config file")
+}
+
+func TestIntegrationCase3(t *testing.T) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		t.Fatalf("Failed to get user's home directory: %v", err)
 	}
+
+	awsConfig := path.Join(homeDir, ".aws", "config")
+	t.Log("AWS config file:", awsConfig)
+
+	err = ParseConfig()
+	t.Log("Error:", err)
+	assert.Error(t, err, "expected error")
+	assert.Contains(t, err.Error(), "Config File \"sevp\" Not Found", "error should mention the missing config file")
+
+	_, _, err = NewAWSProfileSelector().Read()
+	t.Log("Error:", err)
+	assert.Error(t, err, "expected error")
+	assert.Contains(t, err.Error(), "no such file", "error should mention the missing config file")
 }
