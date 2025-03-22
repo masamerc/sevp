@@ -36,6 +36,12 @@ jobs:
       - name: Run tests
         run: go test -v ./...
 
+      - name: Copy over config files
+        run: >
+          mkdir -p $HOME/.config && mkdir -p $HOME/.aws
+          && cp ./integration_tests/sevp_config.test.toml $HOME/.config/sevp.toml
+          && cp ./integration_tests/aws_onfig.test $HOME/.aws/config
+
       - name: Run integraton tests
         run: >
           docker build -t sevp .
