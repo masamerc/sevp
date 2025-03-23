@@ -8,8 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// ----- Unit Tests -----
-
 // parsed selectors should match expected
 func TestFromConfig(t *testing.T) {
 	configContent := `
