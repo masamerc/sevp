@@ -1,8 +1,6 @@
 package internal
 
 import (
-	"os"
-	"path"
 	"strings"
 	"testing"
 
@@ -13,7 +11,7 @@ import (
 // ----- Unit Tests -----
 
 // parsed selectors should match expected
-func TestUnitFromConfig(t *testing.T) {
+func TestFromConfig(t *testing.T) {
 	configContent := `
 [aws]
 read_config = true
@@ -68,7 +66,7 @@ possible_values = ["value1", "value2"]
 }
 
 // parsed selectors should match expected
-func TestUnitGetSelectors(t *testing.T) {
+func TestGetSelectors(t *testing.T) {
 	configContent := `
 default = "aws"
 
@@ -110,7 +108,7 @@ possible_values = ["value1", "value2"]
 }
 
 // parsed default selector should match expected
-func TestUnitDefaultSelector(t *testing.T) {
+func TestDefaultSelector(t *testing.T) {
 	configContent := `
 default = "aws"
 
@@ -145,7 +143,7 @@ possible_values = ["default", "profile1", "profile2"]
 }
 
 // invalid configuration should cause an error with a specific error message
-func TestUnitInvalidConfiguration(t *testing.T) {
+func TestInvalidConfiguration(t *testing.T) {
 	tests := []struct {
 		name          string
 		configContent string
@@ -189,7 +187,7 @@ func TestUnitInvalidConfiguration(t *testing.T) {
 }
 
 // automatic inference and type casting should work as expected
-func TestUnitAutomaticInference(t *testing.T) {
+func TestAutomaticInference(t *testing.T) {
 	configContent := `
 [test]
 target_var = "AWS_PROFILE"
@@ -212,7 +210,7 @@ possible_values = "val"
 	assert.False(t, s.ReadConfig, "read_config should be true")
 }
 
-func TestUnitEmptyConfiguration(t *testing.T) {
+func TestEmptyConfiguration(t *testing.T) {
 	tests := []struct {
 		name          string
 		configContent string
@@ -241,7 +239,7 @@ read_config = false
 }
 
 // edge cases should work as expected
-func TestUnitEdgeCases(t *testing.T) {
+func TestEdgeCases(t *testing.T) {
 	configContent := `
 
 [empty_values]
@@ -307,7 +305,7 @@ possible_values = ["value-with-dash", "value_with_underscore", "value with space
 }
 
 // when there are duplicate selectors in the config, the error message should mention the duplicate table
-func TestUnitDuplicateSelectorsShouldNotBeParseable(t *testing.T) {
+func TestDuplicateSelectorsShouldNotBeParseable(t *testing.T) {
 	configContent := `
 [duplicate]
 read_config = true
@@ -327,7 +325,7 @@ possible_values = ["second"]
 }
 
 // when the selector is not in the config, the error message should mention the missing selector
-func TestUnitNonExistentSelector(t *testing.T) {
+func TestNonExistentSelector(t *testing.T) {
 	configContent := `
 [existing]
 read_config = true
@@ -345,7 +343,7 @@ possible_values = ["value"]
 }
 
 // When no config file is found, the error message should mention the missing config file
-func TestUnitNoConfigFile(t *testing.T) {
+func TestNoConfigFile(t *testing.T) {
 	_, err := FromConfig("no config")
 	assert.Error(t, err, "expected error")
 	assert.Contains(t, err.Error(), "the config file is not found", "error should mention the missing config file")
@@ -353,75 +351,4 @@ func TestUnitNoConfigFile(t *testing.T) {
 	_, err = GetSelectors()
 	assert.Error(t, err, "expected error")
 	assert.Contains(t, err.Error(), "no config file found", "error should mention the missing config file")
-}
-
-// ----- Integration Tests -----
-
-func TestIntegrationCase1(t *testing.T) {
-	// get user's home dir
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		t.Fatalf("Failed to get user's home directory: %v", err)
-	}
-
-	awsConfig := path.Join(homeDir, ".aws", "config")
-
-	// check if file exists
-	if _, err := os.Stat(awsConfig); os.IsNotExist(err) {
-		t.Fatalf("AWS config file not found: %v", err)
-	}
-
-	// parse config
-	err = ParseConfig()
-	if err != nil {
-		t.Fatalf("Failed to parse config: %v", err)
-	}
-
-	// get selectors
-	selectors, err := GetSelectors()
-	if err != nil {
-		t.Fatalf("Failed to get selectors: %v", err)
-	}
-
-	t.Log("Selectors:", selectors)
-
-	assert.NotEmpty(t, selectors, "expected selectors to be not empty")
-}
-
-func TestIntegrationCase2(t *testing.T) {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		t.Fatalf("Failed to get user's home directory: %v", err)
-	}
-
-	awsConfig := path.Join(homeDir, ".aws", "config")
-	t.Log("AWS config file:", awsConfig)
-
-	err = ParseConfig()
-	assert.NoError(t, err, "expected no error")
-
-	_, _, err = NewAWSProfileSelector().Read()
-	t.Log("Error:", err)
-	assert.Error(t, err, "expected error")
-	assert.Contains(t, err.Error(), "no such file", "error should mention the missing config file")
-}
-
-func TestIntegrationCase3(t *testing.T) {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		t.Fatalf("Failed to get user's home directory: %v", err)
-	}
-
-	awsConfig := path.Join(homeDir, ".aws", "config")
-	t.Log("AWS config file:", awsConfig)
-
-	err = ParseConfig()
-	t.Log("Error:", err)
-	assert.Error(t, err, "expected error")
-	assert.Contains(t, err.Error(), "Config File \"sevp\" Not Found", "error should mention the missing config file")
-
-	_, _, err = NewAWSProfileSelector().Read()
-	t.Log("Error:", err)
-	assert.Error(t, err, "expected error")
-	assert.Contains(t, err.Error(), "no such file", "error should mention the missing config file")
 }

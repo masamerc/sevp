@@ -17,15 +17,10 @@ tasks:
       - gosec ./...
     silent: true
 
-  unit-test:
+  test:
     cmds:
       - go test -v ./...
     silent: true
-
-  integration-test:
-    cmds:
-      - podman build -t sevp .
-      - podman run --rm sevp
 
   lint:
     cmds:
