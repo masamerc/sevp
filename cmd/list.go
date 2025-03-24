@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/masamerc/sevp/src/internal"
 	"github.com/spf13/cobra"
+
+	"github.com/masamerc/sevp/internal"
 )
 
 // list command will list all selectors in the config.

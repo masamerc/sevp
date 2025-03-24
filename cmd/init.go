@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/masamerc/sevp/src/internal"
 	"github.com/spf13/cobra"
+
+	"github.com/masamerc/sevp/internal"
 )
 
 // init command will print out a shell hook for the supported shells.

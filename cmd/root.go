@@ -5,10 +5,11 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/masamerc/sevp/src/app"
-	"github.com/masamerc/sevp/src/internal"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/masamerc/sevp/app"
+	"github.com/masamerc/sevp/internal"
 )
 
 var rootCmd = &cobra.Command{
