@@ -16,7 +16,7 @@ var listCmd = &cobra.Command{
 	Short: "List available selectors",
 	Run: func(cmd *cobra.Command, args []string) {
 		selectorMap, err := internal.GetSelectors()
-		internal.FailOnError("Error getting selectors", err)
+		failOnError("Error getting selectors", err)
 
 		var selectorSlice []string
 

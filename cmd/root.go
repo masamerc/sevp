@@ -30,7 +30,7 @@ var rootCmd = &cobra.Command{
 
 				// config parse
 				selecotrSection, err := internal.FromConfig(selectorChoice)
-				internal.FailOnError("Failed to parse selectors", err)
+				failOnError("Failed to parse selectors", err)
 				selector = selecotrSection
 
 			} else {
@@ -38,13 +38,13 @@ var rootCmd = &cobra.Command{
 				slog.Debug("default selector: " + defaultSelector)
 
 				selecotrSection, err := internal.FromConfig(defaultSelector)
-				internal.FailOnError("Failed to parse selectors", err)
+				failOnError("Failed to parse selectors", err)
 
 				if selecotrSection.ReadConfig && defaultSelector == "aws" {
 					selector = internal.NewAWSProfileSelector()
 				} else {
 					if selecotrSection.TargetVar == "" || len(selecotrSection.PossibleValues) == 0 {
-						internal.FailOnError("Error getting selectors", fmt.Errorf("missing target_var or possible_values"))
+						failOnError("Error getting selectors", fmt.Errorf("missing target_var or possible_values"))
 					}
 					selector = selecotrSection
 				}
@@ -60,10 +60,10 @@ var rootCmd = &cobra.Command{
 
 func startApp(s internal.Selector) {
 	targetVar, possibleValues, err := s.Read()
-	internal.FailOnError("Failed to parse selectors", err)
+	failOnError("Failed to parse selectors", err)
 	app := app.NewApp(possibleValues, targetVar)
 	err = app.Run()
-	internal.FailOnError("Failed to run app", err)
+	failOnError("Failed to run app", err)
 }
 
 func Execute() {
@@ -102,9 +102,30 @@ func initConfig() {
 	// and if we have the sevp config, the app will work without aws config
 	if err != nil && viper.ConfigFileUsed() == "" {
 		if os.IsNotExist(err) {
-			internal.FailOnError("AWS config file not found", err)
+			failOnError("AWS config file not found", err)
 		} else {
-			internal.FailOnError("Error checking AWS config file", err)
+			failOnError("Error checking AWS config file", err)
 		}
+	}
+}
+
+// Fail logs the message and exits the program with a non-zero status code.
+//
+// Parameters:
+//   - msg: The error message to log.
+func fail(msg string) {
+	fmt.Println(msg)
+	os.Exit(1)
+}
+
+// failOnError logs the error message and exits the program if an error is encountered.
+//
+// Parameters:
+//   - msg: A descriptive message to log when an error occurs.
+//   - err: The error to log and handle.
+func failOnError(msg string, err error) {
+	if err != nil {
+		fmt.Printf("%s: %s\n", msg, err)
+		os.Exit(1)
 	}
 }

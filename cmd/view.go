@@ -29,25 +29,25 @@ var viewCmd = &cobra.Command{
 		} else {
 			// config found
 			selectorMap, err := internal.GetSelectors()
-			internal.FailOnError("Error getting selectors", err)
+			failOnError("Error getting selectors", err)
 
 			selectorChoice := args[0]
 
 			if selectorChosen, ok := selectorMap[selectorChoice]; ok {
 				if selectorChosen.ReadConfig {
 					selector, err = selectorChosen.IntoExternalProviderSelector()
-					internal.FailOnError("Failed to parse selectors", err)
+					failOnError("Failed to parse selectors", err)
 				} else {
 					selector = selectorChosen
 				}
 			} else {
-				internal.FailOnError("Selector not found", fmt.Errorf("selector %s not found", selectorChoice))
+				failOnError("Selector not found", fmt.Errorf("selector %s not found", selectorChoice))
 			}
 		}
 
 		// read the content of the selector
 		targetVar, possibleValues, err := selector.Read()
-		internal.FailOnError("Failed to parse selectors", err)
+		failOnError("Failed to parse selectors", err)
 
 		// some styling for the stdout
 		purpleStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(app.HexBrightPurple))

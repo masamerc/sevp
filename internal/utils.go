@@ -13,27 +13,6 @@ const (
 	FileName = ".sevp"
 )
 
-// / Fail logs the message and exits the program with a non-zero status code.
-// /
-// / Parameters:
-// /   - msg: The error message to log.
-func Fail(msg string) {
-	fmt.Println(msg)
-	os.Exit(1)
-}
-
-// FailOnError logs the error message and exits the program if an error is encountered.
-//
-// Parameters:
-//   - msg: A descriptive message to log when an error occurs.
-//   - err: The error to log and handle.
-func FailOnError(msg string, err error) {
-	if err != nil {
-		fmt.Printf("%s: %s\n", msg, err)
-		os.Exit(1)
-	}
-}
-
 // InitLogger initializes the logger with the appropriate log level based on the SEVP_LOG_LEVEL
 // environment variable.
 //
