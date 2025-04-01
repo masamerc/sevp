@@ -5,12 +5,9 @@
 A lightweight TUI for seamlessly switching environment variable values.
 
 > [!Important]
-> SEVP is a work in progress and **currently supports only `AWS_PROFILE`**.  
 > This program uses a shellhook to set the environment variable for the current shell and currently supports
-> - `zsh` (tested)
-> - `bash` (tested)
-> - `fish` (not tested)
-> - `nu` (not tested)
+> - `zsh`
+> - `bash`
 
 ---
 
@@ -92,15 +89,30 @@ Simply run sevp which will bring up a TUI for selecting a value:
 $ sevp
 ```
 
+## Notes on `direnv` Compatibility
+
+Environment variables set by SEVP may conflict with tools like [`direnv`](https://direnv.net/) since both rely on shell hooks (e.g., in `.zshrc`). The order in which these hooks are evaluated determines which tool takes precedence.
+
+- **SEVP takes precedence**  
+  SEVP is evaluated after `direnv`:
+  ```sh
+  eval "$(direnv hook zsh)"
+  eval "$(sevp init zsh)"
+  ```
+
+- **`direnv` takes precedence**  
+`direnv` is evaluated after SEVP
+  ```sh
+  eval "$(sevp init zsh)"
+  eval "$(direnv hook zsh)"
+  ```
+
+
 ## Todo
 - [x] CI
 - [x] automatic tagging & releasing
 - [x] one-liner installation 
 - [x] support all commonly used shells
-- [ ] support for other types of environment variables (currently only supports AWS_PROFILE)
+- [X] support for other types of environment variables (currently only supports AWS_PROFILE)
 - [ ] wiki docs
 
-
-### config TODO
-- [ ] `list` command
-- [ ] `list` command with `-v` flag
