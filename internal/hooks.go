@@ -6,16 +6,7 @@ var SupportedShells = []string{
 	"zsh",
 }
 
-type Hooks interface {
-	Hook() string
-}
-
-type (
-	Zsh  struct{}
-	Bash struct{}
-)
-
-func (z Zsh) Hook() string {
+func ZshHook() string {
 	return `function _sevp() {
     if [[ -f ~/.sevp ]]; then
         eval "$(cat ~/.sevp)"
@@ -25,7 +16,7 @@ func (z Zsh) Hook() string {
 precmd_functions+=(_sevp)`
 }
 
-func (b Bash) Hook() string {
+func BashHook() string {
 	return `function _sevp() {
     if [[ -f ~/.sevp ]]; then
         eval "$(cat ~/.sevp)"
