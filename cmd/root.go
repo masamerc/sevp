@@ -111,15 +111,6 @@ func initConfig() {
 	}
 }
 
-// Fail logs the message and exits the program with a non-zero status code.
-//
-// Parameters:
-//   - msg: The error message to log.
-func fail(msg string) {
-	fmt.Fprintln(os.Stderr, msg)
-	os.Exit(1)
-}
-
 // failOnError logs the error message and exits the program if an error is encountered.
 //
 // Parameters:
