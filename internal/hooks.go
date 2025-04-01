@@ -6,22 +6,18 @@ var SupportedShells = []string{
 	"zsh",
 }
 
-func ZshHook() string {
-	return `function _sevp() {
+const ZshHook string = `function _sevp() {
     if [[ -f ~/.sevp ]]; then
         eval "$(cat ~/.sevp)"
     fi
 }
 
 precmd_functions+=(_sevp)`
-}
 
-func BashHook() string {
-	return `function _sevp() {
+const BashHook string = `function _sevp() {
     if [[ -f ~/.sevp ]]; then
         eval "$(cat ~/.sevp)"
     fi
 }
 
 PROMPT_COMMAND="_sevp; ${PROMPT_COMMAND}"`
-}
