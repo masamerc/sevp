@@ -92,7 +92,24 @@ Simply run sevp which will bring up a TUI for selecting a value:
 $ sevp
 ```
 
-## Notes on `direnv` compatibility 
+## Notes on `direnv` Compatibility
+
+Environment variables set by SEVP may conflict with tools like [`direnv`](https://direnv.net/) since both rely on shell hooks (e.g., in `.zshrc`). The order in which these hooks are evaluated determines which tool takes precedence.
+
+- **SEVP takes precedence**  
+  SEVP is evaluated after `direnv`:
+  ```sh
+  eval "$(direnv hook zsh)"
+  eval "$(sevp init zsh)"
+  ```
+
+- **`direnv` takes precedence**  
+`direnv` is evaluated after SEVP
+  ```sh
+  eval "$(sevp init zsh)"
+  eval "$(direnv hook zsh)"
+  ```
+
 
 ## Todo
 - [x] CI
