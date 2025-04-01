@@ -29,9 +29,9 @@ func runInit(cmd *cobra.Command, args []string) {
 	}
 	switch args[0] {
 	case "bash":
-		fmt.Println(internal.Bash{}.Hook())
+		fmt.Fprintln(os.Stdout, internal.Bash{}.Hook())
 	case "zsh":
-		fmt.Println(internal.Zsh{}.Hook())
+		fmt.Fprintln(os.Stdout, internal.Zsh{}.Hook())
 	default:
 		fmt.Fprintf(os.Stderr, "Error: enter a valid shell: %v\n", internal.SupportedShells)
 		os.Exit(1)

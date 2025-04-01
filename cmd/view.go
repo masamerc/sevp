@@ -61,9 +61,10 @@ func runView(cmd *cobra.Command, args []string) {
 	greenSytle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(app.HexBrightGreen))
 
 	// display
-	fmt.Printf("\ntarget environment variable:\n  %s\n", purpleStyle.Render(targetVar))
-	fmt.Println("\npossible values:")
+	fmt.Fprintf(cmd.OutOrStdout(), "\ntarget environment variable:\n  %s\n", purpleStyle.Render(targetVar))
+	fmt.Fprintf(cmd.OutOrStdout(), "\npossible values:\n")
+
 	for _, v := range possibleValues {
-		fmt.Printf("  - %s\n", greenSytle.Render(v))
+		fmt.Fprintf(cmd.OutOrStdout(), "  - %s\n", greenSytle.Render(v))
 	}
 }

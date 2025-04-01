@@ -70,7 +70,7 @@ func startApp(s internal.Selector) {
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
@@ -116,7 +116,7 @@ func initConfig() {
 // Parameters:
 //   - msg: The error message to log.
 func fail(msg string) {
-	fmt.Println(msg)
+	fmt.Fprintln(os.Stderr, msg)
 	os.Exit(1)
 }
 
@@ -127,7 +127,7 @@ func fail(msg string) {
 //   - err: The error to log and handle.
 func failOnError(msg string, err error) {
 	if err != nil {
-		fmt.Printf("%s: %s\n", msg, err)
+		fmt.Fprintf(os.Stderr, "%s: %s\n", msg, err)
 		os.Exit(1)
 	}
 }

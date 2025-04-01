@@ -36,6 +36,6 @@ func runList(cmd *cobra.Command, args []string) {
 	sort.Sort(sorted)
 
 	for _, s := range sorted {
-		fmt.Println(s)
+		fmt.Fprintln(cmd.OutOrStdout(), s)
 	}
 }
