@@ -92,6 +92,8 @@ Simply run sevp which will bring up a TUI for selecting a value:
 $ sevp
 ```
 
+## Notes on `direnv` compatibility 
+
 ## Todo
 - [x] CI
 - [x] automatic tagging & releasing
@@ -100,7 +102,3 @@ $ sevp
 - [ ] support for other types of environment variables (currently only supports AWS_PROFILE)
 - [ ] wiki docs
 
-
-### config TODO
-- [ ] `list` command
-- [ ] `list` command with `-v` flag
