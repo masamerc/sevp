@@ -20,42 +20,44 @@ var rootCmd = &cobra.Command{
 		cobra.MinimumNArgs(0),
 		cobra.MaximumNArgs(1),
 	),
-	Run: func(cmd *cobra.Command, args []string) {
-		var selector internal.Selector
+	Run: runRoot,
+}
 
-		if viper.ConfigFileUsed() != "" {
-			// config route
-			if len(args) == 1 {
-				selectorChoice := args[0]
+func runRoot(cmd *cobra.Command, args []string) {
+	var selector internal.Selector
 
-				// config parse
-				selecotrSection, err := internal.FromConfig(selectorChoice)
-				failOnError("Failed to parse selectors", err)
-				selector = selecotrSection
+	if viper.ConfigFileUsed() != "" {
+		// config route
+		if len(args) == 1 {
+			selectorChoice := args[0]
 
-			} else {
-				defaultSelector := viper.GetString("default")
-				slog.Debug("default selector: " + defaultSelector)
+			// config parse
+			selecotrSection, err := internal.FromConfig(selectorChoice)
+			failOnError("Failed to parse selectors", err)
+			selector = selecotrSection
 
-				selecotrSection, err := internal.FromConfig(defaultSelector)
-				failOnError("Failed to parse selectors", err)
-
-				if selecotrSection.ReadConfig && defaultSelector == "aws" {
-					selector = internal.NewAWSProfileSelector()
-				} else {
-					if selecotrSection.TargetVar == "" || len(selecotrSection.PossibleValues) == 0 {
-						failOnError("Error getting selectors", fmt.Errorf("missing target_var or possible_values"))
-					}
-					selector = selecotrSection
-				}
-			}
 		} else {
-			// no config -> aws config mode
-			selector = internal.NewAWSProfileSelector()
-		}
+			defaultSelector := viper.GetString("default")
+			slog.Debug("default selector: " + defaultSelector)
 
-		startApp(selector)
-	},
+			selecotrSection, err := internal.FromConfig(defaultSelector)
+			failOnError("Failed to parse selectors", err)
+
+			if selecotrSection.ReadConfig && defaultSelector == "aws" {
+				selector = internal.NewAWSProfileSelector()
+			} else {
+				if selecotrSection.TargetVar == "" || len(selecotrSection.PossibleValues) == 0 {
+					failOnError("Error getting selectors", fmt.Errorf("missing target_var or possible_values"))
+				}
+				selector = selecotrSection
+			}
+		}
+	} else {
+		// no config -> aws config mode
+		selector = internal.NewAWSProfileSelector()
+	}
+
+	startApp(selector)
 }
 
 func startApp(s internal.Selector) {
