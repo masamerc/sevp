@@ -116,6 +116,6 @@ Environment variables set by SEVP may conflict with tools like [`direnv`](https:
 - [x] automatic tagging & releasing
 - [x] one-liner installation 
 - [x] support all commonly used shells
-- [ ] support for other types of environment variables (currently only supports AWS_PROFILE)
+- [X] support for other types of environment variables (currently only supports AWS_PROFILE)
 - [ ] wiki docs
 
