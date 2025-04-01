@@ -5,12 +5,9 @@
 A lightweight TUI for seamlessly switching environment variable values.
 
 > [!Important]
-> SEVP is a work in progress and **currently supports only `AWS_PROFILE`**.  
 > This program uses a shellhook to set the environment variable for the current shell and currently supports
-> - `zsh` (tested)
-> - `bash` (tested)
-> - `fish` (not tested)
-> - `nu` (not tested)
+> - `zsh`
+> - `bash`
 
 ---
 
