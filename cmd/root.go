@@ -20,52 +20,27 @@ var rootCmd = &cobra.Command{
 		cobra.MinimumNArgs(0),
 		cobra.MaximumNArgs(1),
 	),
-	Run: runRoot,
+	RunE: runRoot,
 }
 
-func runRoot(cmd *cobra.Command, args []string) {
-	var selector internal.Selector
-
-	if viper.ConfigFileUsed() != "" {
-		// config route
-		if len(args) == 1 {
-			selectorChoice := args[0]
-
-			// config parse
-			selecotrSection, err := internal.FromConfig(selectorChoice)
-			failOnError("Failed to parse selectors", err)
-			selector = selecotrSection
-
-		} else {
-			defaultSelector := viper.GetString("default")
-			slog.Debug("default selector: " + defaultSelector)
-
-			selecotrSection, err := internal.FromConfig(defaultSelector)
-			failOnError("Failed to parse selectors", err)
-
-			if selecotrSection.ReadConfig && defaultSelector == "aws" {
-				selector = internal.NewAWSProfileSelector()
-			} else {
-				if selecotrSection.TargetVar == "" || len(selecotrSection.PossibleValues) == 0 {
-					failOnError("Error getting selectors", fmt.Errorf("missing target_var or possible_values"))
-				}
-				selector = selecotrSection
-			}
-		}
-	} else {
-		// no config -> aws config mode
-		selector = internal.NewAWSProfileSelector()
+func runRoot(cmd *cobra.Command, args []string) error {
+	selector, err := initializeSelector(args)
+	if err != nil {
+		return err
 	}
-
-	startApp(selector)
+	return startApp(selector)
 }
 
-func startApp(s internal.Selector) {
+func startApp(s internal.Selector) error {
 	targetVar, possibleValues, err := s.Read()
-	failOnError("Failed to parse selectors", err)
+	if err != nil {
+		return fmt.Errorf("failed to parse selectors: %w", err)
+	}
 	app := app.NewApp(possibleValues, targetVar)
-	err = app.Run()
-	failOnError("Failed to run app", err)
+	if err := app.Run(); err != nil {
+		return fmt.Errorf("failed to run app: %w", err)
+	}
+	return nil
 }
 
 func Execute() {
@@ -76,16 +51,20 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(func() {
+		if err := initConfig(); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+	})
 }
 
-func initConfig() {
+func initConfig() error {
 	// log settings
 	internal.InitLogger()
 
 	// read in config
-	err := internal.ParseConfig()
-	if err != nil {
+	if err := internal.ParseConfig(); err != nil {
 		slog.Debug("Error parsing config", "err", err)
 		viper.SetDefault("default", "aws")
 	}
@@ -99,26 +78,53 @@ func initConfig() {
 	// check if the AWS config file exists
 	_, err = os.Stat(path)
 
-	// if both aws config and sevp coinfig are missing, exit.
-	// this is because if we have the aws config the aws selector will at least work,
-	// and if we have the sevp config, the app will work without aws config
+	// if both aws config and sevp config are missing, return an error
 	if err != nil && viper.ConfigFileUsed() == "" {
 		if os.IsNotExist(err) {
-			failOnError("AWS config file not found", err)
-		} else {
-			failOnError("Error checking AWS config file", err)
+			return fmt.Errorf("AWS config file not found: %w", err)
 		}
+		return fmt.Errorf("error checking AWS config file: %w", err)
 	}
+	return nil
 }
 
-// failOnError logs the error message and exits the program if an error is encountered.
-//
-// Parameters:
-//   - msg: A descriptive message to log when an error occurs.
-//   - err: The error to log and handle.
-func failOnError(msg string, err error) {
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s: %s\n", msg, err)
-		os.Exit(1)
+func initializeSelector(args []string) (internal.Selector, error) {
+	var selector internal.Selector
+
+	if viper.ConfigFileUsed() != "" {
+		// config route
+		if len(args) == 1 {
+			selectorChoice := args[0]
+
+			// config parse
+			selectorSection, err := internal.FromConfig(selectorChoice)
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse selectors: %w", err)
+			}
+			selector = selectorSection
+
+		} else {
+			defaultSelector := viper.GetString("default")
+			slog.Debug("default selector: " + defaultSelector)
+
+			selectorSection, err := internal.FromConfig(defaultSelector)
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse selectors: %w", err)
+			}
+
+			if selectorSection.ReadConfig && defaultSelector == "aws" {
+				selector = internal.NewAWSProfileSelector()
+			} else {
+				if selectorSection.TargetVar == "" || len(selectorSection.PossibleValues) == 0 {
+					return nil, fmt.Errorf("missing target_var or possible_values")
+				}
+				selector = selectorSection
+			}
+		}
+	} else {
+		// no config -> aws config mode
+		selector = internal.NewAWSProfileSelector()
 	}
+
+	return selector, nil
 }

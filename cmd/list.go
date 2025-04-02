@@ -23,7 +23,10 @@ var listCmd = &cobra.Command{
 
 func runList(cmd *cobra.Command, args []string) {
 	selectorMap, err := internal.GetSelectors()
-	failOnError("Error getting selectors", err)
+	if err != nil {
+		fmt.Fprintf(cmd.OutOrStderr(), "Error getting selectors: %v\n", err)
+		return
+	}
 
 	var selectorSlice []string
 
