@@ -23,7 +23,7 @@ func (d ItemDelegate) Spacing() int                              { return 0 }
 func (d ItemDelegate) Update(msg tea.Msg, m *list.Model) tea.Cmd { return nil }
 
 func (d ItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
-	renderStyles := NewStyles().Rendering
+	renderStyles := NewStyleSet().Rendering
 	i, ok := listItem.(Item)
 	if !ok {
 		return

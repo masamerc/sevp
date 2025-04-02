@@ -26,8 +26,8 @@ func NewApp(items []string, targetVar string) *App {
 }
 
 func (a *App) Run() error {
-	listStyles := NewStyles().List
-	renderStyles := NewStyles().Rendering
+	listStyles := NewStyleSet().List
+	renderStyles := NewStyleSet().Rendering
 
 	l := list.New(a.teaItems, NewItemDelegate(), DefaultWidth, ListHeight)
 

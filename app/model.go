@@ -57,7 +57,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	renderStyles := NewStyles().Rendering
+	renderStyles := NewStyleSet().Rendering
 	if m.choice != "" {
 		err := internal.WriteToFile(m.choice, m.target)
 		if err != nil {
