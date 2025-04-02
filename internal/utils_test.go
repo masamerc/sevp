@@ -1,9 +1,12 @@
 package internal
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"log/slog"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -49,4 +52,27 @@ func TestWriteToFile(t *testing.T) {
 	assert.NoError(t, err, "expected no error reading file")
 	assert.Contains(t, string(content), "export TEST_VAR=new_value", "file content should contain the updated environment variable")
 	assert.Contains(t, string(content), "export ANOTHER_VAR=another_value", "file content should contain the new environment variable")
+}
+
+func TestInitLogger(t *testing.T) {
+	ctx := context.Background()
+
+	tests := []struct {
+		envValue    string
+		expectedLog slog.Level
+	}{
+		{"debug", slog.LevelDebug},
+		{"info", slog.LevelInfo},
+		{"", slog.LevelInfo}, // default case
+		{"other", slog.LevelWarn},
+	}
+
+	for _, test := range tests {
+		t.Run(test.envValue, func(t *testing.T) {
+			os.Setenv("SEVP_LOG_LEVEL", test.envValue)
+			InitLogger()
+			assert.True(t, true, "log level set successfully") // Placeholder assertion
+			assert.True(t, slog.Default().Enabled(ctx, test.expectedLog), "log level mismatch")
+		})
+	}
 }
