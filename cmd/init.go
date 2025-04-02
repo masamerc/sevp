@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 
@@ -22,18 +21,12 @@ var initCmd = &cobra.Command{
 	Run:       runInit,
 }
 
+var shellToHook = map[string]string{
+	"bash": internal.BashHook,
+	"zsh":  internal.ZshHook,
+}
+
 func runInit(cmd *cobra.Command, args []string) {
-	if len(args) != 1 {
-		fmt.Fprintf(os.Stderr, "Error: enter a valid shell: %v\n", internal.SupportedShells)
-		os.Exit(1)
-	}
-	switch args[0] {
-	case "bash":
-		fmt.Fprintln(os.Stdout, internal.BashHook)
-	case "zsh":
-		fmt.Fprintln(os.Stdout, internal.ZshHook)
-	default:
-		fmt.Fprintf(os.Stderr, "Error: enter a valid shell: %v\n", internal.SupportedShells)
-		os.Exit(1)
-	}
+	fmt.Fprintf(cmd.OutOrStdout(), shellToHook[args[0]])
+
 }

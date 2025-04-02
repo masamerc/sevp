@@ -44,6 +44,10 @@ func runView(cmd *cobra.Command, args []string) {
 		selectorChoice := args[0]
 
 		if selectorChosen, ok := selectorMap[selectorChoice]; ok {
+
+			// if the selector is a config selector
+			// sevp will attempt to read and parse the config file.
+			// for example, $HOME/.aws/config for aws profiles.
 			if selectorChosen.ReadConfig {
 				selector, err = selectorChosen.IntoExternalProviderSelector()
 				if err != nil {
@@ -54,10 +58,8 @@ func runView(cmd *cobra.Command, args []string) {
 				selector = selectorChosen
 			}
 		} else {
-			if err != nil {
-				fmt.Fprintf(cmd.OutOrStderr(), "Selector not found: %v\n", err)
-				return
-			}
+			fmt.Fprintf(cmd.OutOrStderr(), "Selector not found: %v\n", err)
+			return
 		}
 	}
 

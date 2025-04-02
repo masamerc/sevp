@@ -71,7 +71,6 @@ func TestInitLogger(t *testing.T) {
 		t.Run(test.envValue, func(t *testing.T) {
 			os.Setenv("SEVP_LOG_LEVEL", test.envValue)
 			InitLogger()
-			assert.True(t, true, "log level set successfully") // Placeholder assertion
 			assert.True(t, slog.Default().Enabled(ctx, test.expectedLog), "log level mismatch")
 		})
 	}

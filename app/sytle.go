@@ -27,13 +27,13 @@ type ListStyles struct {
 	Styles list.Styles
 }
 
-type Styles struct {
+type StyleSet struct {
 	Rendering RenderingStyles
 	List      ListStyles
 }
 
-func NewStyles() *Styles {
-	return &Styles{
+func NewStyleSet() *StyleSet {
+	return &StyleSet{
 		Rendering: RenderingStyles{
 			Item:           lipgloss.NewStyle().PaddingLeft(4),
 			SelectedItem:   lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color(HexBrightGreen)).Bold(true),
