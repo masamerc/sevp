@@ -23,8 +23,10 @@ func TestInitConfig(t *testing.T) {
 
 	// test case: valid aws config file
 	awsConfigPath := tempHome + "/.aws/config"
-	os.MkdirAll(tempHome+"/.aws", 0755)
-	os.WriteFile(awsConfigPath, []byte("[default]\nregion=us-east-1"), 0644)
+	err = os.MkdirAll(tempHome+"/.aws", 0755)
+	assert.NoError(t, err, "Failed to create .aws directory")
+	err = os.WriteFile(awsConfigPath, []byte("[default]\nregion=us-east-1"), 0644)
+	assert.NoError(t, err, "Failed to create aws config file")
 
 	err = InitConfig()
 	assert.NoError(t, err, "Expected no error when AWS config file is present")
