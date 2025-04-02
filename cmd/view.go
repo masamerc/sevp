@@ -36,25 +36,37 @@ func runView(cmd *cobra.Command, args []string) {
 	} else {
 		// config found
 		selectorMap, err := internal.GetSelectors()
-		failOnError("Error getting selectors", err)
+		if err != nil {
+			fmt.Fprintf(cmd.OutOrStderr(), "Error getting selectors: %v\n", err)
+			return
+		}
 
 		selectorChoice := args[0]
 
 		if selectorChosen, ok := selectorMap[selectorChoice]; ok {
 			if selectorChosen.ReadConfig {
 				selector, err = selectorChosen.IntoExternalProviderSelector()
-				failOnError("Failed to parse selectors", err)
+				if err != nil {
+					fmt.Fprintf(cmd.OutOrStderr(), "Failed to parse selectors: %v\n", err)
+					return
+				}
 			} else {
 				selector = selectorChosen
 			}
 		} else {
-			failOnError("Selector not found", fmt.Errorf("selector %s not found", selectorChoice))
+			if err != nil {
+				fmt.Fprintf(cmd.OutOrStderr(), "Selector not found: %v\n", err)
+				return
+			}
 		}
 	}
 
 	// read the content of the selector
 	targetVar, possibleValues, err := selector.Read()
-	failOnError("Failed to parse selectors", err)
+	if err != nil {
+		fmt.Fprintf(cmd.OutOrStderr(), "Failed to parse selectors: %v\n", err)
+		return
+	}
 
 	// some styling for the stdout
 	purpleStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(app.HexBrightPurple))
