@@ -31,14 +31,14 @@ Over time, it evolved to support more flexible use cases—now you can define an
 
 **Default behavior: AWS Profiles**
 
-By default, SEVP reads AWS profiles from `~/.aws/config`. Simply running the command will list all available profiles:
+By default, SEVP reads AWS profiles from `~/.aws/config`. Simply running the command will list all available profiles to switch between:
 ```bash
 $ sevp
 ```
 
 **Select target**
 
-With a custom config, you can select target ([configuration](#configuration)) by passing its as an argument.
+With a custom config, you can select a custom target ([configuration](#configuration)) by passing its name as an argument.
 
 ```bash
 $ sevp google_cloud
