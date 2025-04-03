@@ -2,29 +2,108 @@
 
 ![SEVP](./assets/sevp.png)
 
-A lightweight TUI for seamlessly switching environment variable values.
+A CLI/TUI for seamlessly switching environment variable values. 
+
+**Started as a AWS-profile switcher**
+
+This project began as a simple terminal UI to quickly switch between AWS profiles, with built-in support for reading profiles from `~/.aws/config`.
+
+**Now a flexible environment variable switcher**
+
+Over time, it evolved to support more flexible use cases—now you can define any environment variable as the target and provide your own list of values to toggle between via a custom config file!
+
+
+![SEVP_DEMO](./assets/sevp-demo.gif)
 
 > [!Important]
 > This program uses a shellhook to set the environment variable for the current shell and currently supports
 > - `zsh`
 > - `bash`
 
----
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Installation](#installation)
 
-## Features
 
-![SEVP_DEMO](./assets/sevp-demo.gif)
+## Usage
 
-- A TUI for quickly switching environment variable values for `AWS_PROFILE` which persists in the current shell.
-- Search through a list of AWS profiles declared in `~/.aws/config`.
+### Main command: `sevp`
 
----
+**Default behavior: AWS Profiles**
 
-## Requirements (for building from source)
-- [Task](https://taskfile.dev/) runner (for building from source)
-- Go 1.22+
+By default, SEVP reads AWS profiles from `~/.aws/config`. Simply running the command will list all available profiles:
+```bash
+$ sevp
+```
 
----
+**Select target**
+
+With a custom config, you can select target ([configuration](#configuration)) by passing its as an argument.
+
+```bash
+$ sevp google_cloud
+$ sevp my_custom_var
+```
+
+### List available targets: `sevp list` (config required)
+
+![SEVP_LIST_DEMO](./assets/list-demo.gif)
+
+`list` will list all available targets defined in your config. ([configuration](#configuration))
+
+```bash
+$ sevp list
+```
+
+### View target configuration: `sevp view` (config required)
+
+![SEVP_VIEW_DEMO](./assets/view-demo.gif)
+
+Displays the configuration for a specific target—shows the `target_var` and its `possible_values`.
+
+```bash
+$ sevp view aws
+$ sevp view google_cloud
+$ sevp view my_custom_var
+```
+
+## Configuration
+
+### Custom configuration
+You can create a configuration file to define your own environment variables and the values you want to switch between.
+
+Here’s a sample config you can use to get started:
+
+```toml
+# which target to use when using SEVP without any argument
+default = "aws"
+
+# currently only aws supports read_config (~/.aws/config)
+[aws]
+read_config = true
+
+# user-defined sets of target variable and list of values
+[google_cloud]
+target_var = "GOOGLE_CLOUD_PROJECT"
+possible_values = ["proj1", "proj2", "proj3"]
+
+[some_var]
+target_var = "MY_CUSTOM_ENV_VAR"
+possible_values = ["val1", "val2"]
+```
+
+ SEVP will look for the config file in the following locations (in order of precedence):
+- `$HOME/.config/sevp.toml`
+- `$HOME/sevp.toml`
+
+Anatomy of the config file:
+- `default`: Specifies the default target to use when no argument is provided to `sevp`.
+- Each section (e.g., `[aws]`, `[google_cloud]`) defines a **target**.
+  - The `[aws]` target supports `read_config = true` to auto-load profiles from `~/.aws/config`.
+  - You can also provide custom values for `[aws]` by setting `read_config = false` and defining `target_var` and `possible_values`.
+- `target_var`: The name of the environment variable you want to manage.
+- `possible_values`: A list of values that can be selected for that variable.
+
 
 ## Installation
 
@@ -73,7 +152,7 @@ $ git clone https://github.com/masamerc/sevp.git
 $ cd sevp
 ```
 
-2. Run thne install command:
+2. Run thne install command (requires Taskfile https://taskfile.dev/)
 ```bash
 $ task install
 ```
@@ -81,12 +160,6 @@ $ task install
 3. Add the shellhook to your shell config file:
 ```bash
 eval "$(sevp init <shell>)"
-```
-
-## Usage
-Simply run sevp which will bring up a TUI for selecting a value:
-```bash
-$ sevp
 ```
 
 ## Notes on `direnv` Compatibility
@@ -107,12 +180,6 @@ Environment variables set by SEVP may conflict with tools like [`direnv`](https:
   eval "$(direnv hook zsh)"
   ```
 
-
-## Todo
-- [x] CI
-- [x] automatic tagging & releasing
-- [x] one-liner installation 
-- [x] support all commonly used shells
-- [X] support for other types of environment variables (currently only supports AWS_PROFILE)
-- [ ] wiki docs
-
+## Contribution
+Any contribution is welcome and appreciated!
+Please see [CONTRIBUTING](CONTRIBUTING.md).
