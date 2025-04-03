@@ -51,13 +51,12 @@ $ sevp my_custom_var
 $ sevp list
 ```
 
-![SEVP_LIST_DEMO](./assets/list-demo.gif)
-
 `list` will list all available targets defined in your config. ([configuration](#configuration))
 
-### View target configuration: `sevp view` (config required)
+![SEVP_LIST_DEMO](./assets/list-demo.gif)
 
-![SEVP_VIEW_DEMO](./assets/view-demo.gif)
+
+### View target configuration: `sevp view` (config required)
 
 ```bash
 $ sevp view aws
@@ -66,6 +65,8 @@ $ sevp view my_custom_var
 ```
 
 Displays the configuration for a specific target—shows the `target_var` and its `possible_values`.
+
+![SEVP_VIEW_DEMO](./assets/view-demo.gif)
 
 ## Configuration
 
