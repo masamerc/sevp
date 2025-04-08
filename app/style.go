@@ -14,6 +14,7 @@ const (
 	ListHeight   = 15
 )
 
+// RenderingStyles holds the styles for rendering different components
 type RenderingStyles struct {
 	Item           lipgloss.Style
 	SelectedItem   lipgloss.Style
@@ -23,15 +24,18 @@ type RenderingStyles struct {
 	TargetType     lipgloss.Style
 }
 
+// ListStyles holds the styles for the list (ItemDelegade) component
 type ListStyles struct {
 	Styles list.Styles
 }
 
+// StyleSet is just a container for all the styles
 type StyleSet struct {
 	Rendering RenderingStyles
 	List      ListStyles
 }
 
+// NewStyleSet creates a new StyleSet with default styles
 func NewStyleSet() *StyleSet {
 	return &StyleSet{
 		Rendering: RenderingStyles{

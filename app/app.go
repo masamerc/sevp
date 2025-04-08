@@ -7,12 +7,14 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+// App is the main application struct that holds the items to be displayed
 type App struct {
 	items    []string
 	teaItems []list.Item
 	target   string
 }
 
+// NewApp initializes a new App instance with the provided items and target variable
 func NewApp(items []string, targetVar string) *App {
 	teaItems := make([]list.Item, len(items))
 	for i, itemString := range items {
@@ -25,6 +27,8 @@ func NewApp(items []string, targetVar string) *App {
 	}
 }
 
+// Run starts the Bubble Tea program with the items and target variable
+// set in the App struct
 func (a *App) Run() error {
 	listStyles := NewStyleSet().List
 	renderStyles := NewStyleSet().Rendering
