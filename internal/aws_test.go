@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// Getting the AWS config file path should return the expected path
 func TestGetConfigFile(t *testing.T) {
 	originalHome := os.Getenv("HOME")
 	defer os.Setenv("HOME", originalHome)
@@ -22,6 +23,7 @@ func TestGetConfigFile(t *testing.T) {
 	assert.Equal(t, expectedPath, configPath, "config path should match expected path")
 }
 
+// Reading the contents of a file should return the expected content without error
 func TestReadContents(t *testing.T) {
 	tempDir := t.TempDir()
 	filePath := path.Join(tempDir, "testfile.txt")
@@ -35,6 +37,7 @@ func TestReadContents(t *testing.T) {
 	assert.Equal(t, content, result, "file content should match")
 }
 
+// Parsing the AWS config file should return the expected profiles
 func TestGetProfiles(t *testing.T) {
 	tests := []struct {
 		name     string

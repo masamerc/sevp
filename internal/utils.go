@@ -13,13 +13,9 @@ const (
 	FileName = ".sevp"
 )
 
-// InitLogger initializes the logger with the appropriate log level based on the SEVP_LOG_LEVEL
-// environment variable.
+// InitLogger initializes the logger with the appropriate log level based on the SEVP_LOG_LEVEL.
 //
-// The supported log levels are:
-//   - "debug": Debug-level logging.
-//   - "info": Info-level logging (default).
-//   - Any other value: Warning-level logging.
+// The log level can be set to "debug", "info", or "warn". If not set, it defaults to "info".
 func InitLogger() {
 	// log settings
 	logLevelString := os.Getenv("SEVP_LOG_LEVEL")
@@ -37,10 +33,6 @@ func InitLogger() {
 }
 
 // WriteToFile writes an environment variable to a file.
-//
-// Parameters:
-//   - value: The value of the environment variable.
-//   - target: The name of the environment variable.
 func WriteToFile(value string, target string) error {
 	userHome, err := os.UserHomeDir()
 	if err != nil {

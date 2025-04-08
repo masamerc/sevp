@@ -10,23 +10,24 @@ import (
 	"strings"
 )
 
+// AWSProfileSelector is a struct that implements the Selector interface for selecting AWS profiles.
 type AWSProfileSelector struct{}
 
+// Read is the main function of the AWSProfileSelector struct, which reads the AWS profile names from the AWS config file.
 func (s *AWSProfileSelector) Read() (string, []string, error) {
 	targetVar := "AWS_PROFILE"
 	profiles, err := getAWSProfiles()
 	return targetVar, profiles, err
 }
 
+// NewAWSProfileSelector creates a new empty instance of AWSProfileSelector.
 func NewAWSProfileSelector() *AWSProfileSelector {
 	return &AWSProfileSelector{}
 }
 
-// GetConfigFile retrieves the path to the AWS config file.
+// GetAWSConfigFile retrieves the path to the AWS config file.
 //
-// Returns:
-//   - string: The full path to the AWS config file.
-//   - error: An error if the user's home directory cannot be determined.
+// This operation can fail if the home directory cannot be determined for some reason.
 func GetAWSConfigFile() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -39,14 +40,9 @@ func GetAWSConfigFile() (string, error) {
 	return awsConfigPath, nil
 }
 
-// ReadContents reads the contents of a file given its path.
+// readContents reads the contents of a file given its path.
 //
-// Parameters:
-//   - filePath: The full path to the file to read.
-//
-// Returns:
-//   - string: The file's contents as a string.
-//   - error: An error if the file cannot be opened or read.
+// This operation can fail if reading the file fails or if the file does not exist.
 func readContents(filePath string) (string, error) {
 	// sanitize the file path
 	filePath = filepath.Clean(filePath)
@@ -67,13 +63,9 @@ func readContents(filePath string) (string, error) {
 	return string(buf), nil
 }
 
-// GetProfiles extracts AWS profile names from the AWS config file contents.
+// parseProfiles extracts AWS profile names from the AWS config file contents.
 //
-// Parameters:
-//   - contents: The contents of the AWS config file as a string.
-//
-// Returns:
-//   - []string: A list of profile names found in the config file.
+// In case of no matches, it just returns an empty list and not throws an error.
 func parseProfiles(contents string) []string {
 	pattern := regexp.MustCompile(`\[(?:profile)?(.*?)\]`)
 	matches := pattern.FindAllStringSubmatch(contents, -1)
@@ -91,11 +83,9 @@ func parseProfiles(contents string) []string {
 	return result
 }
 
-// GetAWSProfiles retrieves a list of AWS profile names from the user's AWS config file.
+// getAWSProfiles retrieves a list of AWS profile names from the user's AWS config file.
 //
-// Returns:
-//   - []string: A list of AWS profile names.
-//   - error: An error if the AWS config file cannot be read.
+// If it fails to either get the config file or read its contents, it returns an empty list and an error.
 func getAWSProfiles() ([]string, error) {
 	configPath, err := GetAWSConfigFile()
 	if err != nil {

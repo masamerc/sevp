@@ -10,12 +10,15 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Selector is an interface that defines a method for reading configuration values.
 type Selector interface {
 	Read() (string, []string, error)
 }
 
+// configSelectorMap is a type alias for a map of string to ConfigSelector pointers.
 type configSelectorMap map[string]*ConfigSelector
 
+// ConfigSelector is a struct that defines a set of custom configuration options for a selector.
 type ConfigSelector struct {
 	Name           string
 	ReadConfig     bool
@@ -23,15 +26,14 @@ type ConfigSelector struct {
 	PossibleValues []string
 }
 
+// Read is a method that reads the configuration values from the selector.
 func (s *ConfigSelector) Read() (string, []string, error) {
 	return s.TargetVar, s.PossibleValues, nil
 }
 
 // IntoExternalProviderSelector converts the config selector into a external provider selector
-// For example, the external provider selector for AWS will read profiles set in the AWS config (~/.aws/config)
 //
-// Returns:
-//   - Selector: The external provider selector
+// For example, the external provider selector for AWS will read profiles set in the AWS config (~/.aws/config)
 func (s *ConfigSelector) IntoExternalProviderSelector() (Selector, error) {
 	switch s.Name {
 	case "aws":
@@ -42,12 +44,6 @@ func (s *ConfigSelector) IntoExternalProviderSelector() (Selector, error) {
 }
 
 // FromConfig creates a config selector from the viper config
-//
-// Args:
-//   - name: The name of the selector
-//
-// Returns:
-//   - *ConfigSelector: The config selector
 func FromConfig(name string) (*ConfigSelector, error) {
 	readConfig := viper.GetBool(name + ".read_config")
 	targetVar := viper.GetString(name + ".target_var")
@@ -69,11 +65,9 @@ func FromConfig(name string) (*ConfigSelector, error) {
 }
 
 // ParseConfig reads in the config file.
+//
 // Viper looks for the config in $HOME/.config/sevp.toml and $HOME/sevp.toml.
 // $Home/.config/sevp.toml takes precedence over $HOME/sevp.toml if both exist.
-//
-// Returns:
-//   - error: An error if the config file cannot be read
 func ParseConfig() error {
 	// Get the user's home directory
 	home, err := os.UserHomeDir()
@@ -110,6 +104,7 @@ func ParseConfig() error {
 	return nil
 }
 
+// GetSelectors reads the config file and returns a map of selectors.
 func GetSelectors() (configSelectorMap, error) {
 	if viper.ConfigFileUsed() == "" {
 		return nil, fmt.Errorf("no config file found")

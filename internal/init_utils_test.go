@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// Initializing the configuration should fail or succeed based on the presence of the config file
 func TestInitConfig(t *testing.T) {
 	// backup and restore environment variables
 	originalHome := os.Getenv("HOME")
@@ -32,6 +33,7 @@ func TestInitConfig(t *testing.T) {
 	assert.NoError(t, err, "Expected no error when AWS config file is present")
 }
 
+// Initializing the selector should return a valid selector or an error based on the configuration
 func TestInitSelector(t *testing.T) {
 	// backup and restore viper configuration
 	originalConfig := viper.AllSettings()

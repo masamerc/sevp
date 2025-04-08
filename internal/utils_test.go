@@ -2,15 +2,15 @@ package internal
 
 import (
 	"context"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"log/slog"
-
 	"github.com/stretchr/testify/assert"
 )
 
+// Writing to a file should create the file if it doesn't exist
 func TestWriteToFile(t *testing.T) {
 	tempDir := t.TempDir()
 	tempFile := filepath.Join(tempDir, ".sevp")
@@ -54,6 +54,7 @@ func TestWriteToFile(t *testing.T) {
 	assert.Contains(t, string(content), "export ANOTHER_VAR=another_value", "file content should contain the new environment variable")
 }
 
+// Initializing the logger should set the log level based on the SEVP_LOG_LEVEL environment variable
 func TestInitLogger(t *testing.T) {
 	ctx := context.Background()
 

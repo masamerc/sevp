@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// parsed selectors should match expected
+// Parsed selectors should match expected
 func TestFromConfig(t *testing.T) {
 	configContent := `
 [aws]
@@ -63,7 +63,7 @@ possible_values = ["value1", "value2"]
 	}
 }
 
-// parsed selectors should match expected
+// Parsed selectors should match expected
 func TestGetSelectors(t *testing.T) {
 	configContent := `
 default = "aws"
@@ -105,7 +105,7 @@ possible_values = ["value1", "value2"]
 	assert.Equal(t, expectedSelectors, selectors, "selectors should match expected")
 }
 
-// parsed default selector should match expected
+// Parsed default selector should match expected
 func TestDefaultSelector(t *testing.T) {
 	configContent := `
 default = "aws"
@@ -140,7 +140,7 @@ possible_values = ["default", "profile1", "profile2"]
 	assert.Equal(t, expectedSelector, selector, "selectors should match expected")
 }
 
-// invalid configuration should cause an error with a specific error message
+// Invalid configuration should cause an error with a specific error message
 func TestInvalidConfiguration(t *testing.T) {
 	tests := []struct {
 		name          string
@@ -184,7 +184,7 @@ func TestInvalidConfiguration(t *testing.T) {
 	}
 }
 
-// automatic inference and type casting should work as expected
+// Automatic inference and type casting should work as expected
 func TestAutomaticInference(t *testing.T) {
 	configContent := `
 [test]
@@ -208,6 +208,7 @@ possible_values = "val"
 	assert.False(t, s.ReadConfig, "read_config should be true")
 }
 
+// When the config is empty, it should return an error when trying to get selectors
 func TestEmptyConfiguration(t *testing.T) {
 	tests := []struct {
 		name          string
@@ -236,7 +237,7 @@ read_config = false
 	}
 }
 
-// edge cases should work as expected
+// Empty possible values, single possible value, special characters in values
 func TestEdgeCases(t *testing.T) {
 	configContent := `
 
@@ -302,7 +303,7 @@ possible_values = ["value-with-dash", "value_with_underscore", "value with space
 	}
 }
 
-// when there are duplicate selectors in the config, the error message should mention the duplicate table
+// When there are duplicate selectors in the config, the error message should mention the duplicate table
 func TestDuplicateSelectorsShouldNotBeParseable(t *testing.T) {
 	configContent := `
 [duplicate]
@@ -322,7 +323,7 @@ possible_values = ["second"]
 	assert.Contains(t, err.Error(), "duplicate", "error should mention the duplicate table")
 }
 
-// when the selector is not in the config, the error message should mention the missing selector
+// When the selector is not in the config, the error message should mention the missing selector
 func TestNonExistentSelector(t *testing.T) {
 	configContent := `
 [existing]
