@@ -10,10 +10,11 @@ import (
 	"github.com/masamerc/sevp/internal"
 )
 
+// rootCmd represents the base command
 var rootCmd = &cobra.Command{
 	Use:     "sevp [command]",
 	Version: "0.1.0",
-	Short:   "sevp: pick and switch environement variables.",
+	Short:   "sevp: simple environment variable picker",
 	Args: cobra.MatchAll(
 		cobra.MinimumNArgs(0),
 		cobra.MaximumNArgs(1),
@@ -21,15 +22,14 @@ var rootCmd = &cobra.Command{
 	RunE: runRoot,
 }
 
+// runRoot acts as the main entry point for the entire CLI application.
 func runRoot(cmd *cobra.Command, args []string) error {
 	selector, err := internal.InitSelector(args)
-
 	if err != nil {
 		return err
 	}
 
 	targetVar, possibleValues, err := selector.Read()
-
 	if err != nil {
 		return fmt.Errorf("failed to parse selectors: %w", err)
 	}
@@ -43,6 +43,7 @@ func runRoot(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+// Execute is the main entry point for the CLI application.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -50,6 +51,7 @@ func Execute() {
 	}
 }
 
+// init initializes the CLI application by setting up the configuration.
 func init() {
 	cobra.OnInitialize(func() {
 		if err := internal.InitConfig(); err != nil {

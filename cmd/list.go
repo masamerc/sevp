@@ -13,14 +13,15 @@ func init() {
 	rootCmd.AddCommand(listCmd)
 }
 
-// list command will list all selectors in the config.
-// only works if the config file is present.
+// listCmd lists all selectors in the config.
+// It only works if the config file is present.
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List available selectors",
 	Run:   runList,
 }
 
+// runList executes the list command, printing all available selectors.
 func runList(cmd *cobra.Command, args []string) {
 	selectorMap, err := internal.GetSelectors()
 	if err != nil {

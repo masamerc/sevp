@@ -1,6 +1,3 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -18,7 +15,7 @@ func init() {
 	rootCmd.AddCommand(viewCmd)
 }
 
-// view command will display the details of a selector.
+// viewCmd displays the details of a selector.
 // if no config is found, it will default to AWS profiles.
 var viewCmd = &cobra.Command{
 	Use:   "view <selector>",
@@ -27,6 +24,7 @@ var viewCmd = &cobra.Command{
 	Run:   runView,
 }
 
+// runView executes the view command, displaying the details of a selector.
 func runView(cmd *cobra.Command, args []string) {
 	var selector internal.Selector
 
@@ -44,7 +42,6 @@ func runView(cmd *cobra.Command, args []string) {
 		selectorChoice := args[0]
 
 		if selectorChosen, ok := selectorMap[selectorChoice]; ok {
-
 			// if the selector is a config selector
 			// sevp will attempt to read and parse the config file.
 			// for example, $HOME/.aws/config for aws profiles.
