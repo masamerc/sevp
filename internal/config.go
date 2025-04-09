@@ -15,9 +15,6 @@ type Selector interface {
 	Read() (string, []string, error)
 }
 
-// configSelectorMap maps selector name to ConfigSelector.
-type configSelectorMap map[string]*ConfigSelector
-
 // ConfigSelector is a struct that defines a set of custom configuration options for a selector.
 type ConfigSelector struct {
 	Name           string
@@ -131,8 +128,8 @@ func parseConfig() error {
 	return nil
 }
 
-// InitSelector sets up the appropriate selector based on the provided arguments and configuration.
-func InitSelector(args []string) (Selector, error) {
+// GetSelector sets up the appropriate selector based on the provided arguments and configuration.
+func GetSelector(args []string) (Selector, error) {
 	var selector Selector
 
 	if viper.ConfigFileUsed() != "" {
@@ -173,13 +170,16 @@ func InitSelector(args []string) (Selector, error) {
 	return selector, nil
 }
 
-// GetSelectors reads the config file and returns a map of selectors.
-func GetSelectors() (configSelectorMap, error) {
+// configSelectorMap maps selector name to ConfigSelector.
+type ConfigSelectorMap map[string]*ConfigSelector
+
+// ParseSelectorsFromConfig reads the config file and returns a map of defined selectors.
+func ParseSelectorsFromConfig() (ConfigSelectorMap, error) {
 	if viper.ConfigFileUsed() == "" {
 		return nil, fmt.Errorf("no config file found")
 	}
 
-	selectors := make(configSelectorMap)
+	selectors := make(ConfigSelectorMap)
 	topLevelKeysSet := make(map[string]struct{})
 
 	for key := range viper.AllSettings() {

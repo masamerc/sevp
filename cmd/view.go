@@ -33,7 +33,7 @@ func runView(cmd *cobra.Command, args []string) {
 		selector = internal.NewAWSProfileSelector()
 	} else {
 		// config found
-		selectorMap, err := internal.GetSelectors()
+		selectorMap, err := internal.ParseSelectorsFromConfig()
 		if err != nil {
 			fmt.Fprintf(cmd.OutOrStderr(), "Error getting selectors: %v\n", err)
 			return

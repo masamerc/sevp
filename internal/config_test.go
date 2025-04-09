@@ -85,10 +85,10 @@ possible_values = ["value1", "value2"]
 	err := viper.ReadConfig(strings.NewReader(configContent))
 	assert.NoError(t, err, "expected no error reading config")
 
-	selectors, err := GetSelectors()
+	selectors, err := ParseSelectorsFromConfig()
 	assert.NoError(t, err, "expected no error getting selectors")
 
-	expectedSelectors := configSelectorMap{
+	expectedSelectors := ConfigSelectorMap{
 		"aws": &ConfigSelector{
 			Name:           "aws",
 			ReadConfig:     true,
@@ -125,7 +125,7 @@ possible_values = ["default", "profile1", "profile2"]
 
 	selectorChoice := viper.GetString("default")
 
-	selectors, err := GetSelectors()
+	selectors, err := ParseSelectorsFromConfig()
 	assert.NoError(t, err, "expected no error getting selectors")
 
 	selector, ok := selectors[selectorChoice]
@@ -232,7 +232,7 @@ read_config = false
 			err := viper.ReadConfig(strings.NewReader(test.configContent))
 			assert.NoError(t, err, "expected no error reading config")
 
-			_, err = GetSelectors()
+			_, err = ParseSelectorsFromConfig()
 			assert.Error(t, err, "expected error for empty config")
 		})
 	}
@@ -348,7 +348,7 @@ func TestNoConfigFile(t *testing.T) {
 	assert.Error(t, err, "expected error")
 	assert.Contains(t, err.Error(), "the config file is not found", "error should mention the missing config file")
 
-	_, err = GetSelectors()
+	_, err = ParseSelectorsFromConfig()
 	assert.Error(t, err, "expected error")
 	assert.Contains(t, err.Error(), "no config file found", "error should mention the missing config file")
 }
@@ -381,7 +381,7 @@ func TestInitConfig(t *testing.T) {
 }
 
 // Initializing the selector should return a valid selector or an error based on the configuration
-func TestInitSelector(t *testing.T) {
+func TestGetSelector(t *testing.T) {
 	// backup and restore viper configuration
 	originalConfig := viper.AllSettings()
 	defer func() {
@@ -392,7 +392,7 @@ func TestInitSelector(t *testing.T) {
 	}()
 
 	// test case: no config file used
-	selector, err := InitSelector([]string{})
+	selector, err := GetSelector([]string{})
 	assert.NoError(t, err, "Expected no error when no config file is used")
 	assert.NotNil(t, selector, "Expected a valid selector")
 
@@ -402,7 +402,7 @@ func TestInitSelector(t *testing.T) {
 	viper.Set("invalid_selector.target_var", "")
 	viper.Set("invalid_selector.possible_values", []string{})
 
-	s, err := InitSelector([]string{"invalid_selector"})
+	s, err := GetSelector([]string{"invalid_selector"})
 	t.Log("Selector:", s)
 	t.Log("Error:", err)
 	assert.Error(t, err, "Expected error for invalid selector configuration")
@@ -412,7 +412,7 @@ func TestInitSelector(t *testing.T) {
 	viper.Set("valid_selector.target_var", "TEST_VAR")
 	viper.Set("valid_selector.possible_values", []string{"value1", "value2"})
 
-	selector, err = InitSelector([]string{"valid_selector"})
+	selector, err = GetSelector([]string{"valid_selector"})
 	assert.NoError(t, err, "Expected no error for valid selector configuration")
 	assert.NotNil(t, selector, "Expected a valid selector")
 }
