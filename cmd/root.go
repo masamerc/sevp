@@ -54,6 +54,7 @@ func Execute() {
 // init initializes the CLI application by setting up the configuration.
 func init() {
 	cobra.OnInitialize(func() {
+		internal.InitLogger()
 		if err := internal.InitConfig(); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
