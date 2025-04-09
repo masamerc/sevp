@@ -1,6 +1,5 @@
 package internal
 
-// TODO: add support for more shells like fish, nu
 var SupportedShells = []string{
 	"bash",
 	"zsh",

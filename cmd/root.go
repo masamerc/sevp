@@ -24,7 +24,7 @@ var rootCmd = &cobra.Command{
 
 // runRoot acts as the main entry point for the entire CLI application.
 func runRoot(cmd *cobra.Command, args []string) error {
-	selector, err := internal.InitSelector(args)
+	selector, err := internal.GetSelector(args)
 	if err != nil {
 		return err
 	}
@@ -54,6 +54,7 @@ func Execute() {
 // init initializes the CLI application by setting up the configuration.
 func init() {
 	cobra.OnInitialize(func() {
+		internal.InitLogger()
 		if err := internal.InitConfig(); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)

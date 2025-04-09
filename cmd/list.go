@@ -23,7 +23,7 @@ var listCmd = &cobra.Command{
 
 // runList executes the list command, printing all available selectors.
 func runList(cmd *cobra.Command, args []string) {
-	selectorMap, err := internal.GetSelectors()
+	selectorMap, err := internal.ParseSelectorsFromConfig()
 	if err != nil {
 		fmt.Fprintf(cmd.OutOrStderr(), "Error getting selectors: %v\n", err)
 		return

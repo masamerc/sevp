@@ -15,9 +15,6 @@ type Selector interface {
 	Read() (string, []string, error)
 }
 
-// configSelectorMap is a type alias for a map of string to ConfigSelector pointers.
-type configSelectorMap map[string]*ConfigSelector
-
 // ConfigSelector is a struct that defines a set of custom configuration options for a selector.
 type ConfigSelector struct {
 	Name           string
@@ -64,11 +61,38 @@ func FromConfig(name string) (*ConfigSelector, error) {
 	}, nil
 }
 
+// InitConfig initializes the configuration by  reading the config file.
+func InitConfig() error {
+	// Read in config
+	if err := parseConfig(); err != nil {
+		slog.Debug("Error parsing config", "err", err)
+		viper.SetDefault("default", "aws")
+	}
+
+	// Check for AWS config
+	path, err := GetAWSConfigFile()
+	if err != nil {
+		slog.Debug("Error getting AWS config path", "err", err)
+	}
+
+	// Check if the AWS config file exists
+	_, err = os.Stat(path)
+
+	// If both AWS config and SEVP config are missing, return an error
+	if err != nil && viper.ConfigFileUsed() == "" {
+		if os.IsNotExist(err) {
+			return fmt.Errorf("AWS config file not found: %w", err)
+		}
+		return fmt.Errorf("error checking AWS config file: %w", err)
+	}
+	return nil
+}
+
 // ParseConfig reads in the config file.
 //
 // Viper looks for the config in $HOME/.config/sevp.toml and $HOME/sevp.toml.
 // $Home/.config/sevp.toml takes precedence over $HOME/sevp.toml if both exist.
-func ParseConfig() error {
+func parseConfig() error {
 	// Get the user's home directory
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -104,13 +128,58 @@ func ParseConfig() error {
 	return nil
 }
 
-// GetSelectors reads the config file and returns a map of selectors.
-func GetSelectors() (configSelectorMap, error) {
+// GetSelector sets up the appropriate selector based on the provided arguments and configuration.
+func GetSelector(args []string) (Selector, error) {
+	var selector Selector
+
+	if viper.ConfigFileUsed() != "" {
+		// Config route
+		if len(args) == 1 {
+			selectorChoice := args[0]
+
+			// Config parse
+			selectorSection, err := FromConfig(selectorChoice)
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse selectors: %w", err)
+			}
+			selector = selectorSection
+
+		} else {
+			defaultSelector := viper.GetString("default")
+			slog.Debug("default selector: " + defaultSelector)
+
+			selectorSection, err := FromConfig(defaultSelector)
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse selectors: %w", err)
+			}
+
+			if selectorSection.ReadConfig && defaultSelector == "aws" {
+				selector = NewAWSProfileSelector()
+			} else {
+				if selectorSection.TargetVar == "" || len(selectorSection.PossibleValues) == 0 {
+					return nil, fmt.Errorf("missing target_var or possible_values")
+				}
+				selector = selectorSection
+			}
+		}
+	} else {
+		// No config -> AWS config mode
+		selector = NewAWSProfileSelector()
+	}
+
+	return selector, nil
+}
+
+// configSelectorMap maps selector name to ConfigSelector.
+type ConfigSelectorMap map[string]*ConfigSelector
+
+// ParseSelectorsFromConfig reads the config file and returns a map of defined selectors.
+func ParseSelectorsFromConfig() (ConfigSelectorMap, error) {
 	if viper.ConfigFileUsed() == "" {
 		return nil, fmt.Errorf("no config file found")
 	}
 
-	selectors := make(configSelectorMap)
+	selectors := make(ConfigSelectorMap)
 	topLevelKeysSet := make(map[string]struct{})
 
 	for key := range viper.AllSettings() {
