@@ -32,11 +32,11 @@ func (s *ConfigSelector) Read() (string, []string, error) {
 	return s.TargetVar, s.PossibleValues, nil
 }
 
-// IntoExternalProviderSelector converts the config selector into a external provider selector
+// IntoExternalConfigSelector converts the config selector into a external provider selector
 //
 // For example, the external provider selector for AWS will read profiles set in the AWS config (~/.aws/config)
-func (s *ConfigSelector) IntoExternalProviderSelector() (Selector, error) {
-	return GetExternalProviderSelector(s.Name)
+func (s *ConfigSelector) IntoExternalConfigSelector() (Selector, error) {
+	return GetExternalConfigSelector(s.Name)
 }
 
 // FromConfig creates a config selector from the viper config
@@ -169,7 +169,7 @@ func GetSelector(args []string) (Selector, error) {
 		}
 
 		if selectorSection.ReadConfig {
-			selector, err = selectorSection.IntoExternalProviderSelector()
+			selector, err = selectorSection.IntoExternalConfigSelector()
 			if err != nil {
 				return nil, fmt.Errorf("failed to parse selectors: %w", err)
 			}

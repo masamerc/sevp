@@ -39,7 +39,7 @@ func runView(cmd *cobra.Command, args []string) {
 		// sevp will attempt to read and parse the config file.
 		// for example, $HOME/.aws/config for aws profiles.
 		if selectorChosen.ReadConfig {
-			selector, err = selectorChosen.IntoExternalProviderSelector()
+			selector, err = selectorChosen.IntoExternalConfigSelector()
 			if err != nil {
 				fmt.Fprintf(cmd.OutOrStderr(), "Failed to parse selectors: %v\n", err)
 				return
