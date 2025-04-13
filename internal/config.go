@@ -114,12 +114,12 @@ func createDefaultConfig() error {
 	defaultConfigPath := path.Join(home, ".config", "sevp.toml")
 
 	// Ensure the directory exists
-	if err := os.MkdirAll(path.Dir(defaultConfigPath), 0755); err != nil {
+	if err := os.MkdirAll(path.Dir(defaultConfigPath), 0750); err != nil {
 		return fmt.Errorf("failed to create config directory: %w", err)
 	}
 
 	// Write the default config
-	if err := os.WriteFile(defaultConfigPath, []byte(defaultConfig), 0644); err != nil {
+	if err := os.WriteFile(defaultConfigPath, []byte(defaultConfig), 0600); err != nil {
 		return fmt.Errorf("failed to write default config: %w", err)
 	}
 
