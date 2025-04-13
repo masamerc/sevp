@@ -1,34 +1,69 @@
 package extconfig
 
 import (
-	"os/exec"
-	"strings"
+	"encoding/json"
+	"errors"
+	"os"
+	"path/filepath"
 )
 
-// DockerContextSelector is a struct that implements the Selector interface for selecting Docker contexts.
 type DockerContextSelector struct{}
 
-// Read is the main function of the DockerContextSelector struct, which reads the Docker context names.
 func (s *DockerContextSelector) Read() (string, []string, error) {
 	targetVar := "DOCKER_CONTEXT"
-	contexts, err := getDockerContexts()
+	contexts, err := getDockerContextsFromMeta()
 	return targetVar, contexts, err
 }
 
-// NewDockerContextSelector creates a new empty instance of DockerContextSelector.
 func NewDockerContextSelector() *DockerContextSelector {
 	return &DockerContextSelector{}
 }
 
-// getDockerContexts retrieves a list of Docker context names
-func getDockerContexts() ([]string, error) {
-	cmd := exec.Command("docker", "context", "ls", "--format", "{{.Name}}")
-	output, err := cmd.Output()
+type dockerContextMeta struct {
+	Name string `json:"Name"`
+}
+
+// getDockerContextsFromMeta returns the names of all docker contexts in the meta dir
+func getDockerContextsFromMeta() ([]string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return nil, err
+	}
+	return parseDockerContexts(filepath.Join(home, ".docker", "contexts", "meta"))
+}
+
+// parseDockerContexts returns the names of all docker contexts in the meta dir
+func parseDockerContexts(metaDir string) ([]string, error) {
+	entries, err := os.ReadDir(metaDir)
 	if err != nil {
 		return nil, err
 	}
 
-	lines := strings.Split(strings.TrimSpace(string(output)), "\n")
-	return lines, nil
-}
+	var names []string
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
 
+		metaPath := filepath.Join(metaDir, entry.Name(), "meta.json")
+		data, err := os.ReadFile(metaPath)
+		if err != nil {
+			continue
+		}
+
+		var meta dockerContextMeta
+		if err := json.Unmarshal(data, &meta); err != nil {
+			continue
+		}
+
+		if meta.Name != "" {
+			names = append(names, meta.Name)
+		}
+	}
+
+	if len(names) == 0 {
+		return nil, errors.New("no docker contexts found")
+	}
+
+	return names, nil
+}
