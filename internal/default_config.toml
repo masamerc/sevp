@@ -3,11 +3,17 @@ default = "aws"
 
 # Currently the following targets support reading external settings:
 # - aws: source settings from ~/.aws/config for AWS_PROFILE
+# - docker-context: source settings from your docker installation (runs `docker context ls`)
 
 [aws]
 read_config = false # true -> read profiles from ~/.aws/config
 target_var = "AWS_PROFILE"
 possible_values = ["prod1", "prod2"]
+
+[docker-context]
+read_config = true
+target_var = "DOCKER_CONTEXT"
+possible_values = ["default", "sample1", "sample2"]
 
 # The following are user-defined targets with manual configuration
 [google_cloud]

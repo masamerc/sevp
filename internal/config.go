@@ -157,7 +157,17 @@ func GetSelector(args []string) (Selector, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse selectors: %w", err)
 		}
-		selector = selectorSection
+
+		if selectorSection.ReadConfig {
+			selector, err = selectorSection.IntoExternalConfigSelector()
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse selectors: %w", err)
+			}
+
+			return selector, nil
+		}
+
+		return selectorSection, nil
 
 	} else {
 		defaultSelector := viper.GetString("default")
@@ -179,9 +189,9 @@ func GetSelector(args []string) (Selector, error) {
 			}
 			selector = selectorSection
 		}
-	}
 
-	return selector, nil
+		return selector, nil
+	}
 }
 
 // configSelectorMap maps selector name to ConfigSelector.
