@@ -69,8 +69,19 @@ func FromConfig(name string) (*ConfigSelector, error) {
 func InitConfig() error {
 	// Read in config
 	if err := parseConfig(); err != nil {
+
+		// if no config file is found, create a default one
+		if err == err.(viper.ConfigFileNotFoundError) {
+			slog.Debug("Config file not found, creating default config")
+			err := createDefaultConfig()
+			return err
+		}
+
 		return err
 	}
+
+	// TODO: AWS stuff should be moved to a separate package.
+	// The proces here should be general for all external providers, not just AWS.
 
 	// Check for AWS config
 	path, err := GetAWSConfigFile()
@@ -89,6 +100,34 @@ func InitConfig() error {
 		return fmt.Errorf("error checking AWS config file: %w", err)
 	}
 	return nil
+}
+
+// createDefaultConfig creates a default config file
+func createDefaultConfig() error {
+	// Get the user's home directory
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("failed to get user home directory: %w", err)
+	}
+
+	// Default config path
+	defaultConfigPath := path.Join(home, ".config", "sevp.toml")
+
+	// Ensure the directory exists
+	if err := os.MkdirAll(path.Dir(defaultConfigPath), 0755); err != nil {
+		return fmt.Errorf("failed to create config directory: %w", err)
+	}
+
+	// Write the default config
+	if err := os.WriteFile(defaultConfigPath, []byte(defaultConfig), 0644); err != nil {
+		return fmt.Errorf("failed to write default config: %w", err)
+	}
+
+	slog.Debug("Default config created", "path", defaultConfigPath)
+
+	// Default file creation will still return an error
+	// so the main CLI can exit once and prompt users to run sevp again
+	return fmt.Errorf("created default config")
 }
 
 // ParseConfig reads in the config file.
@@ -114,37 +153,8 @@ func parseConfig() error {
 
 	// Read in the config
 	if err := viper.ReadInConfig(); err != nil {
-		// If config is not found, create one with the default config content
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			slog.Debug("Config file not found, creating default config")
-
-			// Get the user's home directory
-			home, err := os.UserHomeDir()
-			if err != nil {
-				return fmt.Errorf("failed to get user home directory: %w", err)
-			}
-
-			// Default config path
-			defaultConfigPath := path.Join(home, ".config", "sevp.toml")
-
-			// Ensure the directory exists
-			if err := os.MkdirAll(path.Dir(defaultConfigPath), 0755); err != nil {
-				return fmt.Errorf("failed to create config directory: %w", err)
-			}
-
-			// Write the default config
-			if err := os.WriteFile(defaultConfigPath, []byte(defaultConfig), 0644); err != nil {
-				return fmt.Errorf("failed to write default config: %w", err)
-			}
-
-			slog.Debug("Default config created", "path", defaultConfigPath)
-
-			return fmt.Errorf("created default config")
-
-		} else {
-			slog.Debug("Error reading config", "err", err)
-			return err
-		}
+		slog.Debug("Error reading config", "err", err)
+		return err
 	}
 
 	if len(viper.AllSettings()) == 0 {
