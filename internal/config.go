@@ -1,6 +1,7 @@
 package internal
 
 import (
+	_ "embed"
 	"fmt"
 	"log/slog"
 	"os"
@@ -9,6 +10,9 @@ import (
 
 	"github.com/spf13/viper"
 )
+
+//go:embed config/default_config.toml
+var defaultConfig string
 
 // Selector is an interface that defines a method for reading configuration values.
 type Selector interface {
@@ -65,8 +69,7 @@ func FromConfig(name string) (*ConfigSelector, error) {
 func InitConfig() error {
 	// Read in config
 	if err := parseConfig(); err != nil {
-		slog.Debug("Error parsing config", "err", err)
-		viper.SetDefault("default", "aws")
+		return err
 	}
 
 	// Check for AWS config
@@ -111,13 +114,37 @@ func parseConfig() error {
 
 	// Read in the config
 	if err := viper.ReadInConfig(); err != nil {
+		// If config is not found, create one with the default config content
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			slog.Debug("Config file not found")
+			slog.Debug("Config file not found, creating default config")
+
+			// Get the user's home directory
+			home, err := os.UserHomeDir()
+			if err != nil {
+				return fmt.Errorf("failed to get user home directory: %w", err)
+			}
+
+			// Default config path
+			defaultConfigPath := path.Join(home, ".config", "sevp.toml")
+
+			// Ensure the directory exists
+			if err := os.MkdirAll(path.Dir(defaultConfigPath), 0755); err != nil {
+				return fmt.Errorf("failed to create config directory: %w", err)
+			}
+
+			// Write the default config
+			if err := os.WriteFile(defaultConfigPath, []byte(defaultConfig), 0644); err != nil {
+				return fmt.Errorf("failed to write default config: %w", err)
+			}
+
+			slog.Debug("Default config created", "path", defaultConfigPath)
+
+			return fmt.Errorf("created default config")
+
 		} else {
 			slog.Debug("Error reading config", "err", err)
+			return err
 		}
-
-		return err
 	}
 
 	if len(viper.AllSettings()) == 0 {

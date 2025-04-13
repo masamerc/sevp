@@ -1,0 +1,19 @@
+# Here we specify which target to use when using SEVP without any argument
+default = "aws"
+
+# Currently the following targets support reading external settings:
+# - aws: source settings from ~/.aws/config for AWS_PROFILE
+
+[aws]
+read_config = false # true -> read profiles from ~/.aws/config
+target_var = "AWS_PROFILE"
+possible_values = ["prod1", "prod2"]
+
+# The following are user-defined targets with manual configuration
+[google_cloud]
+target_var = "GOOGLE_CLOUD_PROJECT"
+possible_values = ["proj1", "proj2", "proj3"]
+
+[some_var]
+target_var = "MY_CUSTOM_ENV_VAR"
+possible_values = ["val1", "val2"]

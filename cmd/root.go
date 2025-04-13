@@ -55,7 +55,16 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(func() {
 		internal.InitLogger()
+
 		if err := internal.InitConfig(); err != nil {
+			// If config is not found, create one with the default config content
+			if err.Error() == "created default config" {
+				fmt.Fprintln(os.Stderr, "Created default config: $HOME/.config/sevp.toml")
+				fmt.Fprintln(os.Stderr, "Try running sevp again.")
+				os.Exit(0)
+			}
+
+			// for other errors just exit
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
