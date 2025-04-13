@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-//go:embed config/default_config.toml
+//go:embed default_config.toml
 var defaultConfig string
 
 // Selector is an interface that defines a method for reading configuration values.
@@ -32,16 +32,11 @@ func (s *ConfigSelector) Read() (string, []string, error) {
 	return s.TargetVar, s.PossibleValues, nil
 }
 
-// IntoExternalProviderSelector converts the config selector into a external provider selector
+// IntoExternalConfigSelector converts the config selector into a external provider selector
 //
 // For example, the external provider selector for AWS will read profiles set in the AWS config (~/.aws/config)
-func (s *ConfigSelector) IntoExternalProviderSelector() (Selector, error) {
-	switch s.Name {
-	case "aws":
-		return &AWSProfileSelector{}, nil
-	default:
-		return nil, fmt.Errorf("the external config provider is not supported for selector %s", s.Name)
-	}
+func (s *ConfigSelector) IntoExternalConfigSelector() (Selector, error) {
+	return GetExternalConfigSelector(s.Name)
 }
 
 // FromConfig creates a config selector from the viper config
@@ -80,25 +75,6 @@ func InitConfig() error {
 		return err
 	}
 
-	// TODO: AWS stuff should be moved to a separate package.
-	// The proces here should be general for all external providers, not just AWS.
-
-	// Check for AWS config
-	path, err := GetAWSConfigFile()
-	if err != nil {
-		slog.Debug("Error getting AWS config path", "err", err)
-	}
-
-	// Check if the AWS config file exists
-	_, err = os.Stat(path)
-
-	// If both AWS config and SEVP config are missing, return an error
-	if err != nil && viper.ConfigFileUsed() == "" {
-		if os.IsNotExist(err) {
-			return fmt.Errorf("AWS config file not found: %w", err)
-		}
-		return fmt.Errorf("error checking AWS config file: %w", err)
-	}
 	return nil
 }
 
@@ -193,7 +169,7 @@ func GetSelector(args []string) (Selector, error) {
 		}
 
 		if selectorSection.ReadConfig {
-			selector, err = selectorSection.IntoExternalProviderSelector()
+			selector, err = selectorSection.IntoExternalConfigSelector()
 			if err != nil {
 				return nil, fmt.Errorf("failed to parse selectors: %w", err)
 			}

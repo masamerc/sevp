@@ -25,7 +25,8 @@ var viewCmd = &cobra.Command{
 // runView executes the view command, displaying the details of a selector.
 func runView(cmd *cobra.Command, args []string) {
 	var selector internal.Selector
-	// config found
+
+	// Config found
 	selectorMap, err := internal.ParseSelectorsFromConfig()
 	if err != nil {
 		fmt.Fprintf(cmd.OutOrStderr(), "Error getting selectors: %v\n", err)
@@ -35,11 +36,10 @@ func runView(cmd *cobra.Command, args []string) {
 	selectorChoice := args[0]
 
 	if selectorChosen, ok := selectorMap[selectorChoice]; ok {
-		// if the selector is a config selector
-		// sevp will attempt to read and parse the config file.
-		// for example, $HOME/.aws/config for aws profiles.
+		// If the selector is a external config selector,
+		// sevp will attempt to read and parse the external config file.
 		if selectorChosen.ReadConfig {
-			selector, err = selectorChosen.IntoExternalProviderSelector()
+			selector, err = selectorChosen.IntoExternalConfigSelector()
 			if err != nil {
 				fmt.Fprintf(cmd.OutOrStderr(), "Failed to parse selectors: %v\n", err)
 				return
@@ -52,18 +52,18 @@ func runView(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	// read the content of the selector
+	// Read the content of the selector
 	targetVar, possibleValues, err := selector.Read()
 	if err != nil {
 		fmt.Fprintf(cmd.OutOrStderr(), "Failed to parse selectors: %v\n", err)
 		return
 	}
 
-	// some styling for the stdout
+	// Some styling for the stdout
 	purpleStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(app.HexBrightPurple))
 	greenStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(app.HexBrightGreen))
 
-	// display
+	// Display
 	fmt.Fprintf(cmd.OutOrStdout(), "\ntarget environment variable:\n  %s\n", purpleStyle.Render(targetVar))
 	fmt.Fprintf(cmd.OutOrStdout(), "\npossible values:\n")
 
