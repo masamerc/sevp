@@ -29,9 +29,8 @@ Over time, it evolved to support more flexible use cases—now you can define an
 
 ### Main command: `sevp`
 
-**Default behavior: AWS Profiles**
+Running `sevp` without any arguments will read your config and use the `default` target.
 
-By default, SEVP reads AWS profiles from `~/.aws/config`. Simply running the command will list all available profiles to switch between:
 ```bash
 $ sevp
 ```
