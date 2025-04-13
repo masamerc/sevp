@@ -2,6 +2,7 @@ package internal
 
 import (
 	_ "embed"
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -103,7 +104,7 @@ func createDefaultConfig() error {
 
 	// Default file creation will still return an error
 	// so the main CLI can exit once and prompt users to run sevp again
-	return fmt.Errorf("created default config")
+	return errors.New("created default config")
 }
 
 // ParseConfig reads in the config file.
@@ -134,7 +135,7 @@ func parseConfig() error {
 	}
 
 	if len(viper.AllSettings()) == 0 {
-		return fmt.Errorf("config file is empty")
+		return errors.New("config file is empty")
 	}
 
 	slog.Debug("Config file read successfully", "path", viper.ConfigFileUsed())
@@ -167,7 +168,7 @@ func GetSelector(args []string) (Selector, error) {
 	}
 
 	if section.TargetVar == "" || len(section.PossibleValues) == 0 {
-		return nil, fmt.Errorf("missing target_var or possible_values")
+		return nil, errors.New("missing target_var or possible_values")
 	}
 
 	return section, nil
