@@ -3,7 +3,7 @@ default = "aws"
 
 # Currently the following targets support reading external settings:
 # - aws: source settings from ~/.aws/config for AWS_PROFILE
-# - docker-context: source settings from your docker installation (runs `docker context ls`)
+# - docker-context: source settings from ~/.docker/contexts/meta dir
 
 [aws]
 read_config = false # true -> read profiles from ~/.aws/config
