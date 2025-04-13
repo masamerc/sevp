@@ -5,7 +5,6 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	"github.com/masamerc/sevp/app"
 	"github.com/masamerc/sevp/internal"
@@ -16,7 +15,6 @@ func init() {
 }
 
 // viewCmd displays the details of a selector.
-// if no config is found, it will default to AWS profiles.
 var viewCmd = &cobra.Command{
 	Use:   "view <selector>",
 	Short: "Check the possible values of a selector",
@@ -27,37 +25,31 @@ var viewCmd = &cobra.Command{
 // runView executes the view command, displaying the details of a selector.
 func runView(cmd *cobra.Command, args []string) {
 	var selector internal.Selector
+	// config found
+	selectorMap, err := internal.ParseSelectorsFromConfig()
+	if err != nil {
+		fmt.Fprintf(cmd.OutOrStderr(), "Error getting selectors: %v\n", err)
+		return
+	}
 
-	if viper.ConfigFileUsed() == "" {
-		// no config -> default to AWS
-		selector = internal.NewAWSProfileSelector()
-	} else {
-		// config found
-		selectorMap, err := internal.ParseSelectorsFromConfig()
-		if err != nil {
-			fmt.Fprintf(cmd.OutOrStderr(), "Error getting selectors: %v\n", err)
-			return
-		}
+	selectorChoice := args[0]
 
-		selectorChoice := args[0]
-
-		if selectorChosen, ok := selectorMap[selectorChoice]; ok {
-			// if the selector is a config selector
-			// sevp will attempt to read and parse the config file.
-			// for example, $HOME/.aws/config for aws profiles.
-			if selectorChosen.ReadConfig {
-				selector, err = selectorChosen.IntoExternalProviderSelector()
-				if err != nil {
-					fmt.Fprintf(cmd.OutOrStderr(), "Failed to parse selectors: %v\n", err)
-					return
-				}
-			} else {
-				selector = selectorChosen
+	if selectorChosen, ok := selectorMap[selectorChoice]; ok {
+		// if the selector is a config selector
+		// sevp will attempt to read and parse the config file.
+		// for example, $HOME/.aws/config for aws profiles.
+		if selectorChosen.ReadConfig {
+			selector, err = selectorChosen.IntoExternalProviderSelector()
+			if err != nil {
+				fmt.Fprintf(cmd.OutOrStderr(), "Failed to parse selectors: %v\n", err)
+				return
 			}
 		} else {
-			fmt.Fprintf(cmd.OutOrStderr(), "Selector not found: %v\n", err)
-			return
+			selector = selectorChosen
 		}
+	} else {
+		fmt.Fprintf(cmd.OutOrStderr(), "Selector not found: %v\n", err)
+		return
 	}
 
 	// read the content of the selector

@@ -169,39 +169,40 @@ func parseConfig() error {
 func GetSelector(args []string) (Selector, error) {
 	var selector Selector
 
-	if viper.ConfigFileUsed() != "" {
-		// Config route
-		if len(args) == 1 {
-			selectorChoice := args[0]
+	if viper.ConfigFileUsed() == "" {
+		return nil, fmt.Errorf("no config file found")
+	}
+	// Config route
+	if len(args) == 1 {
+		selectorChoice := args[0]
 
-			// Config parse
-			selectorSection, err := FromConfig(selectorChoice)
+		// Config parse
+		selectorSection, err := FromConfig(selectorChoice)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse selectors: %w", err)
+		}
+		selector = selectorSection
+
+	} else {
+		defaultSelector := viper.GetString("default")
+		slog.Debug("default selector: " + defaultSelector)
+
+		selectorSection, err := FromConfig(defaultSelector)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse selectors: %w", err)
+		}
+
+		if selectorSection.ReadConfig {
+			selector, err = selectorSection.IntoExternalProviderSelector()
 			if err != nil {
 				return nil, fmt.Errorf("failed to parse selectors: %w", err)
+			}
+		} else {
+			if selectorSection.TargetVar == "" || len(selectorSection.PossibleValues) == 0 {
+				return nil, fmt.Errorf("missing target_var or possible_values")
 			}
 			selector = selectorSection
-
-		} else {
-			defaultSelector := viper.GetString("default")
-			slog.Debug("default selector: " + defaultSelector)
-
-			selectorSection, err := FromConfig(defaultSelector)
-			if err != nil {
-				return nil, fmt.Errorf("failed to parse selectors: %w", err)
-			}
-
-			if selectorSection.ReadConfig && defaultSelector == "aws" {
-				selector = NewAWSProfileSelector()
-			} else {
-				if selectorSection.TargetVar == "" || len(selectorSection.PossibleValues) == 0 {
-					return nil, fmt.Errorf("missing target_var or possible_values")
-				}
-				selector = selectorSection
-			}
 		}
-	} else {
-		// No config -> AWS config mode
-		selector = NewAWSProfileSelector()
 	}
 
 	return selector, nil
