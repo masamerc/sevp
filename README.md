@@ -71,9 +71,13 @@ Displays the configuration for a specific target—shows the `target_var` and it
 ## Configuration
 
 ### Custom configuration
-You can create a configuration file to define your own environment variables and the values you want to switch between.
+You can use a configuration file to define your own environment variables and the values you want to switch between.
 
-Here’s a sample config you can use to get started:
+> [!Note]
+> SEVP will create a default config file in `$HOME/.config/sevp.toml` if it doesn't exist when you run it for the first time.
+
+
+Here’s a sample config: 
 
 ```toml
 # which target to use when using SEVP without any argument

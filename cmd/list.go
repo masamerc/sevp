@@ -31,8 +31,8 @@ func runList(cmd *cobra.Command, args []string) {
 
 	var selectorSlice []string
 
-	for k := range selectorMap {
-		selectorSlice = append(selectorSlice, k)
+	for s := range selectorMap {
+		selectorSlice = append(selectorSlice, s)
 	}
 
 	// sort the selectors since the map order is not guaranteed
