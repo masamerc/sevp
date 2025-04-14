@@ -29,17 +29,21 @@ func TestReadTfenvVersionsInvalidVersion(t *testing.T) {
 	tmp := t.TempDir()
 
 	// Simulate tfenv version structure
-	version1 := filepath.Join(tmp, "0.1.0.100") // Invalid version
-	version2 := filepath.Join(tmp, "11.2.0")
+	version1 := filepath.Join(tmp, "0.1.0.100")    // Invalid version
+	version2 := filepath.Join(tmp, "11.2.0")       // Valid version
+	version3 := filepath.Join(tmp, "1.1.1alpha")   // Invalid version
+	version4 := filepath.Join(tmp, "1.1.1-alpha1") // Valid version
 	_ = os.MkdirAll(version1, 0750)
 	_ = os.MkdirAll(version2, 0750)
+	_ = os.MkdirAll(version3, 0750)
+	_ = os.MkdirAll(version4, 0750)
 
 	v, err := readTfenvVersions(tmp)
 
 	require.NoError(t, err)
 
 	// The invalid version should be ignored
-	require.ElementsMatch(t, []string{"11.2.0"}, v)
+	require.ElementsMatch(t, []string{"11.2.0", "1.1.1-alpha1"}, v)
 }
 
 // TestReadTfenvVersionsEmpty should return an error if the tfenv dir is empty
