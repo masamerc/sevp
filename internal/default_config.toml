@@ -1,27 +1,37 @@
 # Here we specify which target to use when using SEVP without any argument
 default = "aws"
 
+# ======================================================================
+# External Config Selectors
+#
 # Currently the following targets support reading external settings:
 # - aws: source settings from ~/.aws/config for AWS_PROFILE
 # - docker-context: source settings from ~/.docker/contexts/meta dir
 # - tfenv: source settings from ~/.tfenv/versions dir
+# ======================================================================
 
 [aws]
 external_config = false # true -> read profiles from ~/.aws/config
 target_var = "AWS_PROFILE"
 possible_values = ["prod1", "prod2"]
 
-[docker-context]
-external_config = true
-target_var = "DOCKER_CONTEXT"
-possible_values = ["default", "sample1", "sample2"]
+# [docker-context]
+# external_config = true
+# target_var = "DOCKER_CONTEXT"
+# possible_values = ["default", "sample1", "sample2"]
 
-[tfenv]
-external_config = true
-target_var = "TFENV_TERRAFORM_VERSION"
-possible_values = ["1.0.0", "0.1.1"]
+# [tfenv]
+# external_config = true
+# target_var = "TFENV_TERRAFORM_VERSION"
+# possible_values = ["1.0.0", "0.1.1"]
 
-# The following are user-defined targets with manual configuration
+
+# ======================================================================
+# User-defined Config Selectors
+# 
+# The following are user-defined targets with manual configuration.
+# ======================================================================
+
 [google_cloud]
 target_var = "GOOGLE_CLOUD_PROJECT"
 possible_values = ["proj1", "proj2", "proj3"]
