@@ -90,15 +90,15 @@ default = "aws"
 # - docker-context: source settings from ~/.docker/contexts/meta dir
 
 [aws]
-# external config provider has a special option called `read_config` 
+# external config provider has a special option called `external_config` 
 # if true, it will read profiles from ~/.aws/config
-read_config = false 
-# if read_config = true, the following options will have no effect
+external_config = false 
+# if external_config = true, the following options will have no effect
 target_var = "AWS_PROFILE"
 possible_values = ["prod1", "prod2"]
 
 [docker-context]
-read_config = true
+external_config = true
 target_var = "DOCKER_CONTEXT"
 possible_values = ["default", "sample1", "sample2"]
 
@@ -120,25 +120,25 @@ External Config Providers allow SEVP to dynamically fetch values from external c
 1. **AWS**  
    - Reads profiles from `~/.aws/config`.
    - Automatically sets the `AWS_PROFILE` environment variable.
-   - Enable by setting `read_config = true` in the `[aws]` section.
+   - Enable by setting `external_config = true` in the `[aws]` section.
 
 2. **Docker Context**  
    - Reads contexts from `~/.docker/contexts/meta`.
    - Automatically sets the `DOCKER_CONTEXT` environment variable.
-   - Enable by setting `read_config = true` in the `[docker-context]` section.
+   - Enable by setting `external_config = true` in the `[docker-context]` section.
 
 #### How It Works:
-- When `read_config = true`, SEVP ignores the `possible_values` field and dynamically fetches values from the external configuration.
+- When `external_config = true`, SEVP ignores the `possible_values` field and dynamically fetches values from the external configuration.
 - This ensures SEVP stays in sync with changes made outside the tool.
 
 #### Example Configuration:
 ```toml
 [aws]
-read_config = true
+external_config = true
 target_var = "AWS_PROFILE"
 
 [docker-context]
-read_config = true
+external_config = true
 target_var = "DOCKER_CONTEXT"
 ```
 

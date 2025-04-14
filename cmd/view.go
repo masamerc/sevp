@@ -38,7 +38,7 @@ func runView(cmd *cobra.Command, args []string) {
 	if selectorChosen, ok := selectorMap[selectorChoice]; ok {
 		// If the selector is a external config selector,
 		// sevp will attempt to read and parse the external config file.
-		if selectorChosen.ReadConfig {
+		if selectorChosen.ReadExternalConfig {
 			selector, err = selectorChosen.IntoExternalConfigSelector()
 			if err != nil {
 				fmt.Fprintf(cmd.OutOrStderr(), "Failed to parse selectors: %v\n", err)

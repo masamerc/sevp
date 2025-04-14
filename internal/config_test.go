@@ -13,12 +13,12 @@ import (
 func TestFromConfig(t *testing.T) {
 	configContent := `
 [aws]
-read_config = true
+external_config = true
 target_var = "AWS_PROFILE"
 possible_values = ["default", "profile1", "profile2"]
 
 [custom]
-read_config = false
+external_config = false
 target_var = "CUSTOM_VAR"
 possible_values = ["value1", "value2"]
 `
@@ -37,20 +37,20 @@ possible_values = ["value1", "value2"]
 			name:     "AWS Selector",
 			selector: "aws",
 			expected: &ConfigSelector{
-				Name:           "aws",
-				ReadConfig:     true,
-				TargetVar:      "AWS_PROFILE",
-				PossibleValues: []string{"default", "profile1", "profile2"},
+				Name:               "aws",
+				ReadExternalConfig: true,
+				TargetVar:          "AWS_PROFILE",
+				PossibleValues:     []string{"default", "profile1", "profile2"},
 			},
 		},
 		{
 			name:     "Custom Selector",
 			selector: "custom",
 			expected: &ConfigSelector{
-				Name:           "custom",
-				ReadConfig:     false,
-				TargetVar:      "CUSTOM_VAR",
-				PossibleValues: []string{"value1", "value2"},
+				Name:               "custom",
+				ReadExternalConfig: false,
+				TargetVar:          "CUSTOM_VAR",
+				PossibleValues:     []string{"value1", "value2"},
 			},
 		},
 	}
@@ -70,12 +70,12 @@ func TestGetSelectors(t *testing.T) {
 default = "aws"
 
 [aws]
-read_config = true
+external_config = true
 target_var = "AWS_PROFILE"
 possible_values = ["default", "profile1", "profile2"]
 
 [custom]
-read_config = false
+external_config = false
 target_var = "CUSTOM_VAR"
 possible_values = ["value1", "value2"]
 `
@@ -90,16 +90,16 @@ possible_values = ["value1", "value2"]
 
 	expectedSelectors := ConfigSelectorMap{
 		"aws": &ConfigSelector{
-			Name:           "aws",
-			ReadConfig:     true,
-			TargetVar:      "AWS_PROFILE",
-			PossibleValues: []string{"default", "profile1", "profile2"},
+			Name:               "aws",
+			ReadExternalConfig: true,
+			TargetVar:          "AWS_PROFILE",
+			PossibleValues:     []string{"default", "profile1", "profile2"},
 		},
 		"custom": &ConfigSelector{
-			Name:           "custom",
-			ReadConfig:     false,
-			TargetVar:      "CUSTOM_VAR",
-			PossibleValues: []string{"value1", "value2"},
+			Name:               "custom",
+			ReadExternalConfig: false,
+			TargetVar:          "CUSTOM_VAR",
+			PossibleValues:     []string{"value1", "value2"},
 		},
 	}
 
@@ -112,7 +112,7 @@ func TestDefaultSelector(t *testing.T) {
 default = "aws"
 
 [aws]
-read_config = true
+external_config = true
 target_var = "AWS_PROFILE"
 possible_values = ["default", "profile1", "profile2"]
 `
@@ -132,10 +132,10 @@ possible_values = ["default", "profile1", "profile2"]
 	assert.True(t, ok, "expected selector to be found")
 
 	expectedSelector := &ConfigSelector{
-		Name:           "aws",
-		ReadConfig:     true,
-		TargetVar:      "AWS_PROFILE",
-		PossibleValues: []string{"default", "profile1", "profile2"},
+		Name:               "aws",
+		ReadExternalConfig: true,
+		TargetVar:          "AWS_PROFILE",
+		PossibleValues:     []string{"default", "profile1", "profile2"},
 	}
 
 	assert.Equal(t, expectedSelector, selector, "selectors should match expected")
@@ -153,7 +153,7 @@ func TestInvalidConfiguration(t *testing.T) {
 			configContent: `
 
 		[invalid]
-		read_config = false
+		external_config = false
 		possible_values = ["value1"]`,
 
 			expectedErr: "target_var",
@@ -163,7 +163,7 @@ func TestInvalidConfiguration(t *testing.T) {
 			configContent: `
 
 		[invalid]
-		read_config = false
+		external_config = false
 		target_var = "TEST_VAR"`,
 
 			expectedErr: "possible_values",
@@ -205,8 +205,8 @@ possible_values = "val"
 	assert.Equal(t, 1, len(s.PossibleValues), "should have exactly one possible value")
 	assert.Equal(t, "val", s.PossibleValues[0], "possible value should be 'val'")
 
-	// automatic inferene of ReadConfig bool by viper (false if not set)
-	assert.False(t, s.ReadConfig, "read_config should be true")
+	// automatic inferene of ReadExternalConfig bool by viper (false if not set)
+	assert.False(t, s.ReadExternalConfig, "external_config should be true")
 }
 
 // When the config is empty, it should return an error when trying to get selectors
@@ -219,7 +219,7 @@ func TestEmptyConfiguration(t *testing.T) {
 			name: "Empty Selector",
 			configContent: `
 [empty]
-read_config = false
+external_config = false
 `,
 		},
 	}
@@ -243,17 +243,17 @@ func TestEdgeCases(t *testing.T) {
 	configContent := `
 
 [empty_values]
-read_config = true
+external_config = true
 target_var = "EMPTY_VAR"
 possible_values = []
 
 [single_value]
-read_config = true
+external_config = true
 target_var = "SINGLE_VAR"
 possible_values = ["one"]
 
 [special_chars]
-read_config = true
+external_config = true
 target_var = "SPECIAL_VAR!@#$"
 possible_values = ["value-with-dash", "value_with_underscore", "value with spaces", "!@#$%^&*()"]
 `
@@ -308,12 +308,12 @@ possible_values = ["value-with-dash", "value_with_underscore", "value with space
 func TestDuplicateSelectorsShouldNotBeParseable(t *testing.T) {
 	configContent := `
 [duplicate]
-read_config = true
+external_config = true
 target_var = "FIRST_VAR"
 possible_values = ["first"]
 
 [duplicate]
-read_config = false
+external_config = false
 target_var = "SECOND_VAR"
 possible_values = ["second"]
 `
@@ -328,7 +328,7 @@ possible_values = ["second"]
 func TestNonExistentSelector(t *testing.T) {
 	configContent := `
 [existing]
-read_config = true
+external_config = true
 target_var = "TEST_VAR"
 possible_values = ["value"]
 `
@@ -396,7 +396,7 @@ func TestGetSelector(t *testing.T) {
 
 	// test case: invalid selector in config
 	viper.SetConfigFile("non-existent.toml")
-	viper.Set("invalid_selector.read_config", false)
+	viper.Set("invalid_selector.external_config", false)
 	viper.Set("invalid_selector.target_var", "")
 	viper.Set("invalid_selector.possible_values", []string{})
 
@@ -406,7 +406,7 @@ func TestGetSelector(t *testing.T) {
 	assert.Error(t, err, "Expected error for invalid selector configuration")
 
 	// test case: valid selector in config
-	viper.Set("valid_selector.read_config", false)
+	viper.Set("valid_selector.external_config", false)
 	viper.Set("valid_selector.target_var", "TEST_VAR")
 	viper.Set("valid_selector.possible_values", []string{"value1", "value2"})
 
