@@ -2,6 +2,7 @@ package internal
 
 import (
 	_ "embed"
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -103,7 +104,7 @@ func createDefaultConfig() error {
 
 	// Default file creation will still return an error
 	// so the main CLI can exit once and prompt users to run sevp again
-	return fmt.Errorf("created default config")
+	return errors.New("created default config")
 }
 
 // ParseConfig reads in the config file.
@@ -134,54 +135,43 @@ func parseConfig() error {
 	}
 
 	if len(viper.AllSettings()) == 0 {
-		return fmt.Errorf("config file is empty")
+		return errors.New("config file is empty")
 	}
 
 	slog.Debug("Config file read successfully", "path", viper.ConfigFileUsed())
 	return nil
 }
 
-// GetSelector sets up the appropriate selector based on the provided arguments and configuration.
+// GetSelector returns the appropriate selector based on CLI args and config.
 func GetSelector(args []string) (Selector, error) {
-	var selector Selector
-
 	if viper.ConfigFileUsed() == "" {
 		return nil, fmt.Errorf("no config file found")
 	}
-	// Config route
+
+	// Check for default selector for when no args are provided
+	selectorName := viper.GetString("default")
+
+	// If target selector is provided, use it
 	if len(args) == 1 {
-		selectorChoice := args[0]
-
-		// Config parse
-		selectorSection, err := FromConfig(selectorChoice)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse selectors: %w", err)
-		}
-		selector = selectorSection
-
-	} else {
-		defaultSelector := viper.GetString("default")
-		slog.Debug("default selector: " + defaultSelector)
-
-		selectorSection, err := FromConfig(defaultSelector)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse selectors: %w", err)
-		}
-
-		if selectorSection.ReadConfig {
-			selector, err = selectorSection.IntoExternalConfigSelector()
-			if err != nil {
-				return nil, fmt.Errorf("failed to parse selectors: %w", err)
-			}
-		} else {
-			if selectorSection.TargetVar == "" || len(selectorSection.PossibleValues) == 0 {
-				return nil, fmt.Errorf("missing target_var or possible_values")
-			}
-			selector = selectorSection
-		}
+		selectorName = args[0]
 	}
 
-	return selector, nil
+	section, err := FromConfig(selectorName)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse selectors: %w", err)
+	}
+
+	// If the selector is an external config provider,
+	// converts the config selector into a external config selector
+	if section.ReadConfig {
+		return section.IntoExternalConfigSelector()
+	}
+
+	if section.TargetVar == "" || len(section.PossibleValues) == 0 {
+		return nil, errors.New("missing target_var or possible_values")
+	}
+
+	return section, nil
 }
 
 // configSelectorMap maps selector name to ConfigSelector.
