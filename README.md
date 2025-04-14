@@ -197,7 +197,7 @@ target_var = "GOENV_VERSION"
    $ brew install sevp
    ```
 
-3. Add the shellhook to your shell configuration ('.zshrc' / '.bashrc'):
+3. Add the shellhook to your shell configuration (`.zshrc` / `.bashrc`):
    ```bash
    eval "$(sevp init <shell>)"
    ```
@@ -209,7 +209,7 @@ target_var = "GOENV_VERSION"
    $ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install.sh | bash
    ```
 
-2. Add the shellhook to your shell configuration ('.zshrc' / '.bashrc'):
+2. Add the shellhook to your shell configuration (`.zshrc` / `.bashrc`):
    ```bash
    eval "$(sevp init <shell>)"
    ```
@@ -221,7 +221,7 @@ target_var = "GOENV_VERSION"
    $ go install github.com/masamerc/sevp@latest
    ```
 
-2. Add the shellhook to your shell configuration ('.zshrc' / '.bashrc'):
+2. Add the shellhook to your shell configuration (`.zshrc` / `.bashrc`):
    ```bash
    eval "$(sevp init <shell>)"
    ```
@@ -239,7 +239,7 @@ target_var = "GOENV_VERSION"
    $ task install
    ```
 
-3. Add the shellhook to your shell configuration ('.zshrc' / '.bashrc'):
+3. Add the shellhook to your shell configuration (`.zshrc` / `.bashrc`):
    ```bash
    eval "$(sevp init <shell>)"
    ```
