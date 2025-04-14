@@ -46,7 +46,7 @@ func parseDockerContexts(metaDir string) ([]string, error) {
 		}
 
 		metaPath := filepath.Join(metaDir, entry.Name(), "meta.json")
-		data, err := os.ReadFile(metaPath)
+		data, err := os.ReadFile(filepath.Clean(metaPath))
 		if err != nil {
 			continue
 		}
