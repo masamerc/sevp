@@ -71,7 +71,7 @@ Displays the configuration for a specific target—shows the `target_var` and it
 You can use a configuration file to define your own environment variables and the values you want to switch between.
 
  `sevp` will look for the config file in the following locations (in order of precedence):
-- `$HOME/.config/sevp.toml`
+- `$HOME/.config/sevp.toml` (default config location)
 - `$HOME/sevp.toml`
 
 Here’s a sample config: 
@@ -107,7 +107,6 @@ target_var = "MY_CUSTOM_ENV_VAR"
 possible_values = ["val1", "val2"]
 
 ```
-
 
 - `default`: Specifies the default target to use when no argument is provided to `sevp`.
 - Each section (e.g., `[aws]`, `[google_cloud]`) defines a **target**.
