@@ -159,6 +159,10 @@ target_var = "AWS_PROFILE"
 [docker-context]
 external_config = true
 target_var = "DOCKER_CONTEXT"
+
+[tfenv]
+external_config = true
+target_var = "TFENV_TERRAFORM_VERSION"
 ```
 
 ## Installation
