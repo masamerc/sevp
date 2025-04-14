@@ -6,7 +6,7 @@ SEVP is a lightweight CLI/TUI tool designed to simplify switching between enviro
 
 ![SEVP_DEMO](./assets/sevp-demo.gif)
 
-> **Note**  
+> [!Note]
 > SEVP uses a shellhook to set environment variables for the current shell. It currently supports:
 > - `zsh`
 > - `bash`
@@ -27,7 +27,7 @@ SEVP helps you quickly switch between predefined values for environment variable
 
 ## Usage
 
-> **Important**  
+> [!Important]
 > SEVP will create a default config file at `$HOME/.config/sevp.toml` if it doesn't exist when you run it for the first time.
 
 ### Main Command: `sevp`
