@@ -41,7 +41,7 @@ $ sevp google_cloud
 $ sevp my_custom_var
 ```
 
-### List available targets: `sevp list` (config required)
+### List available targets: `sevp list`
 
 ```bash
 $ sevp list
@@ -52,7 +52,7 @@ $ sevp list
 ![SEVP_LIST_DEMO](./assets/list-demo.gif)
 
 
-### View target configuration: `sevp view` (config required)
+### View target configuration: `sevp view`
 
 ```bash
 $ sevp view aws
@@ -71,7 +71,7 @@ Displays the configuration for a specific target—shows the `target_var` and it
 You can use a configuration file to define your own environment variables and the values you want to switch between.
 
  `sevp` will look for the config file in the following locations (in order of precedence):
-- `$HOME/.config/sevp.toml` (default config location)
+- `$HOME/.config/sevp.toml` (default location)
 - `$HOME/sevp.toml`
 
 Here’s a sample config: 
