@@ -9,7 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetDockerContextsFromPath(t *testing.T) {
+// TestParseDockerContexts should return the names of all docker contexts in the meta dir
+func TestParseDockerContexts(t *testing.T) {
 	tmp := t.TempDir()
 
 	// Simulate meta dir context structure
@@ -32,7 +33,8 @@ func TestGetDockerContextsFromPath(t *testing.T) {
 	require.ElementsMatch(t, []string{"default", "custom"}, contexts)
 }
 
-func TestGetDockerContextsFromPath_Empty(t *testing.T) {
+// TestParseDockerContextsEmpty should return an error if the meta dir is empty
+func TestParseDockerContextsEmpty(t *testing.T) {
 	tmp := t.TempDir()
 	_, err := parseDockerContexts(tmp)
 	require.Error(t, err)

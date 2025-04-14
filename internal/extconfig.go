@@ -13,6 +13,8 @@ func GetExternalConfigSelector(selectorName string) (Selector, error) {
 		return extconfig.NewAWSProfileSelector(), nil
 	case "docker-context":
 		return extconfig.NewDockerContextSelector(), nil
+	case "tfenv":
+		return extconfig.NewTfEnvSelector(), nil
 	default:
 		return nil, fmt.Errorf("the external config provider is not supported for selector %s", selectorName)
 	}

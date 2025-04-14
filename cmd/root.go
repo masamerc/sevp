@@ -26,7 +26,7 @@ var rootCmd = &cobra.Command{
 func runRoot(cmd *cobra.Command, args []string) error {
 	selector, err := internal.GetSelector(args)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get selector: %w", err)
 	}
 
 	targetVar, possibleValues, err := selector.Read()
