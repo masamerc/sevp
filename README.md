@@ -2,20 +2,11 @@
 
 ![SEVP](./assets/sevp.png)
 
-A CLI/TUI for seamlessly switching environment variable values. 
-
-**Started as a AWS-profile switcher**
-
-This project began as a simple terminal UI to quickly switch between AWS profiles, with built-in support for reading profiles from `~/.aws/config`.
-
-**Now a flexible environment variable switcher**
-
-Over time, it evolved to support more flexible use cases—now you can define any environment variable as the target and provide your own list of values to toggle between via a custom config file!
-
+A CLI/TUI for seamlessly switching between values for environment variables.
 
 ![SEVP_DEMO](./assets/sevp-demo.gif)
 
-> [!Important]
+> [!Note]
 > This program uses a shellhook to set the environment variable for the current shell and currently supports
 > - `zsh`
 > - `bash`
@@ -24,12 +15,18 @@ Over time, it evolved to support more flexible use cases—now you can define an
 - [Configuration](#configuration)
 - [Installation](#installation)
 
-
 ## Usage
+
+> [!Important]
+> SEVP will create a default config file in `$HOME/.config/sevp.toml` if it doesn't exist when you run it for the first time.
+
 
 ### Main command: `sevp`
 
 Running `sevp` without any arguments will read your config and use the `default` target.
+- `sevp` command will bring up a TUI for you to select a value. 
+- for `aws` target as an example, you will be choosing a profile to use by setting the `AWS_PROFILE` environment variable.
+
 
 ```bash
 $ sevp
@@ -37,7 +34,7 @@ $ sevp
 
 **Select target**
 
-With a custom config, you can select a custom target ([configuration](#configuration)) by passing its name as an argument.
+You can select a target from your config ([configuration](#configuration)) by passing its name as an argument.
 
 ```bash
 $ sevp google_cloud
@@ -72,21 +69,30 @@ Displays the configuration for a specific target—shows the `target_var` and it
 ### Custom configuration
 You can use a configuration file to define your own environment variables and the values you want to switch between.
 
-> [!Note]
-> SEVP will create a default config file in `$HOME/.config/sevp.toml` if it doesn't exist when you run it for the first time.
-
-
 Here’s a sample config: 
 
 ```toml
-# which target to use when using SEVP without any argument
+# Here we specify which target to use when using SEVP without any argument
 default = "aws"
 
-# currently only aws supports read_config (~/.aws/config)
-[aws]
-read_config = true
+# Currently the following targets (called external config providers) support reading external settings:
+# - aws: source settings from ~/.aws/config for AWS_PROFILE
+# - docker-context: source settings from ~/.docker/contexts/meta dir
 
-# user-defined sets of target variable and list of values
+[aws]
+# external config provider has a special option called `read_config` 
+# if true, it will read profiles from ~/.aws/config
+read_config = false 
+# if read_config = true, the following options are ignored
+target_var = "AWS_PROFILE"
+possible_values = ["prod1", "prod2"]
+
+[docker-context]
+read_config = true
+target_var = "DOCKER_CONTEXT"
+possible_values = ["default", "sample1", "sample2"]
+
+# The following are user-defined targets with manual configuration
 [google_cloud]
 target_var = "GOOGLE_CLOUD_PROJECT"
 possible_values = ["proj1", "proj2", "proj3"]
@@ -94,6 +100,7 @@ possible_values = ["proj1", "proj2", "proj3"]
 [some_var]
 target_var = "MY_CUSTOM_ENV_VAR"
 possible_values = ["val1", "val2"]
+
 ```
 
  SEVP will look for the config file in the following locations (in order of precedence):
@@ -108,6 +115,35 @@ Anatomy of the config file:
 - `target_var`: The name of the environment variable you want to manage.
 - `possible_values`: A list of values that can be selected for that variable.
 
+### External Config Provider
+
+External Config Providers allow SEVP to dynamically read and manage environment variable values from external configuration files or directories. This feature is particularly useful for tools like AWS CLI or Docker, where profiles or contexts are defined externally.
+
+#### Supported External Config Providers:
+1. **AWS**  
+   - Reads profiles from `~/.aws/config`.
+   - Automatically sets the `AWS_PROFILE` environment variable based on the selected profile.
+   - To enable this, set `read_config = true` in the `[aws]` section of your configuration.
+
+2. **Docker Context**  
+   - Reads Docker contexts from `~/.docker/contexts/meta`.
+   - Automatically sets the `DOCKER_CONTEXT` environment variable based on the selected context.
+   - To enable this, set `read_config = true` in the `[docker-context]` section of your configuration.
+
+#### How It Works:
+- When `read_config = true` is set for a target, SEVP will ignore the `possible_values` field and instead fetch the values dynamically from the respective external configuration.
+- This allows SEVP to stay in sync with changes made outside of the tool, such as adding or removing AWS profiles or Docker contexts.
+
+#### Example Configuration:
+```toml
+[aws]
+read_config = true
+target_var = "AWS_PROFILE"
+
+[docker-context]
+read_config = true
+target_var = "DOCKER_CONTEXT"
+```
 
 ## Installation
 
