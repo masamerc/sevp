@@ -18,14 +18,14 @@ A CLI/TUI for seamlessly switching between values for environment variables.
 ## Usage
 
 > [!Important]
-> SEVP will create a default config file in `$HOME/.config/sevp.toml` if it doesn't exist when you run it for the first time.
+> `sevp` will create a default config file in `$HOME/.config/sevp.toml` if it doesn't exist when you run it for the first time.
 
 
 ### Main command: `sevp`
 
 Running `sevp` without any arguments will read your config and use the `default` target.
 - `sevp` command will bring up a TUI for you to select a value. 
-- for `aws` target as an example, you will be choosing a profile to use by setting the `AWS_PROFILE` environment variable.
+- for `aws` target as an example, you will be choosing a profile by setting the `AWS_PROFILE` environment variable.
 
 
 ```bash
@@ -103,7 +103,7 @@ possible_values = ["val1", "val2"]
 
 ```
 
- SEVP will look for the config file in the following locations (in order of precedence):
+ `sevp` will look for the config file in the following locations (in order of precedence):
 - `$HOME/.config/sevp.toml`
 - `$HOME/sevp.toml`
 
@@ -117,7 +117,7 @@ Anatomy of the config file:
 
 ### External Config Provider
 
-External Config Providers allow SEVP to dynamically read and manage environment variable values from external configuration files or directories. This feature is particularly useful for tools like AWS CLI or Docker, where profiles or contexts are defined externally.
+External Config Providers allow `sevp` to dynamically read and manage environment variable values from external configuration files or directories. This feature is particularly useful for tools like AWS CLI or Docker, where profiles or contexts are defined externally.
 
 #### Supported External Config Providers:
 1. **AWS**  
@@ -131,8 +131,8 @@ External Config Providers allow SEVP to dynamically read and manage environment 
    - To enable this, set `read_config = true` in the `[docker-context]` section of your configuration.
 
 #### How It Works:
-- When `read_config = true` is set for a target, SEVP will ignore the `possible_values` field and instead fetch the values dynamically from the respective external configuration.
-- This allows SEVP to stay in sync with changes made outside of the tool, such as adding or removing AWS profiles or Docker contexts.
+- When `read_config = true` is set for a target, `sevp` will ignore the `possible_values` field and instead fetch the values dynamically from the respective external configuration.
+- This allows `sevp` to stay in sync with changes made outside of the tool, such as adding or removing AWS profiles or Docker contexts.
 
 #### Example Configuration:
 ```toml
@@ -204,17 +204,17 @@ eval "$(sevp init <shell>)"
 
 ## Notes on `direnv` Compatibility
 
-Environment variables set by SEVP may conflict with tools like [`direnv`](https://direnv.net/) since both rely on shell hooks (e.g., in `.zshrc`). The order in which these hooks are evaluated determines which tool takes precedence.
+Environment variables set by `sevp` may conflict with tools like [`direnv`](https://direnv.net/) since both rely on shell hooks (e.g., in `.zshrc`). The order in which these hooks are evaluated determines which tool takes precedence.
 
-- **SEVP takes precedence**  
-  SEVP is evaluated after `direnv`:
+- **`sevp` takes precedence**  
+  `sevp` is evaluated after `direnv`:
   ```sh
   eval "$(direnv hook zsh)"
   eval "$(sevp init zsh)"
   ```
 
 - **`direnv` takes precedence**  
-`direnv` is evaluated after SEVP
+`direnv` is evaluated after `sevp`
   ```sh
   eval "$(sevp init zsh)"
   eval "$(direnv hook zsh)"
