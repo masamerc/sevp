@@ -22,10 +22,10 @@ type Selector interface {
 
 // ConfigSelector is a struct that defines a set of custom configuration options for a selector.
 type ConfigSelector struct {
-	Name           string
-	ReadConfig     bool
-	TargetVar      string
-	PossibleValues []string
+	Name               string
+	ReadExternalConfig bool
+	TargetVar          string
+	PossibleValues     []string
 }
 
 // Read is a method that reads the configuration values from the selector.
@@ -42,7 +42,7 @@ func (s *ConfigSelector) IntoExternalConfigSelector() (Selector, error) {
 
 // FromConfig creates a config selector from the viper config
 func FromConfig(name string) (*ConfigSelector, error) {
-	readConfig := viper.GetBool(name + ".read_config")
+	readConfig := viper.GetBool(name + ".external_config")
 	targetVar := viper.GetString(name + ".target_var")
 	possibleValues := viper.GetStringSlice(name + ".possible_values")
 
@@ -54,10 +54,10 @@ func FromConfig(name string) (*ConfigSelector, error) {
 	}
 
 	return &ConfigSelector{
-		Name:           name,
-		ReadConfig:     readConfig,
-		TargetVar:      targetVar,
-		PossibleValues: possibleValues,
+		Name:               name,
+		ReadExternalConfig: readConfig,
+		TargetVar:          targetVar,
+		PossibleValues:     possibleValues,
 	}, nil
 }
 
@@ -163,7 +163,7 @@ func GetSelector(args []string) (Selector, error) {
 
 	// If the selector is an external config provider,
 	// converts the config selector into a external config selector
-	if section.ReadConfig {
+	if section.ReadExternalConfig {
 		return section.IntoExternalConfigSelector()
 	}
 
