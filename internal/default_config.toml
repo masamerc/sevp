@@ -8,6 +8,7 @@ default = "aws"
 # - aws: source settings from ~/.aws/config for AWS_PROFILE
 # - docker-context: source settings from ~/.docker/contexts/meta dir
 # - tfenv: source settings from ~/.tfenv/versions dir
+# - goenv: source settings from ~/.goenv/versions dir
 # ======================================================================
 
 [aws]
