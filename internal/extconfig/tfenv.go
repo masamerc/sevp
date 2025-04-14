@@ -41,7 +41,7 @@ func readTfenvVersions(tfEnvPath string) ([]string, error) {
 			continue
 		}
 
-		if !isValidVersionString(entry.Name()) {
+		if !isValidTfenvVersionString(entry.Name()) {
 			continue
 		}
 
@@ -55,8 +55,8 @@ func readTfenvVersions(tfEnvPath string) ([]string, error) {
 	return versions, nil
 }
 
-// isValidVersionString checks if the given string is a valid Terraform version string (e.g. 1.1.0)
-func isValidVersionString(versionString string) bool {
-	pattern := regexp.MustCompile(`^\d+\.\d+\.\d+$`)
-	return pattern.MatchString(versionString)
+// isValidTfenvVersionString returns true if the version string is valid terraform version
+func isValidTfenvVersionString(version string) bool {
+	re := regexp.MustCompile(`^\d+\.\d+\.\d+(?:-(?:alpha\d+|beta\d+|rc\d+|oci|alpha\d{8}))?$`)
+	return re.MatchString(version)
 }

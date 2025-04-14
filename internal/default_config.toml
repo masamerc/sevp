@@ -8,6 +8,7 @@ default = "aws"
 # - aws: source settings from ~/.aws/config for AWS_PROFILE
 # - docker-context: source settings from ~/.docker/contexts/meta dir
 # - tfenv: source settings from ~/.tfenv/versions dir
+# - goenv: source settings from ~/.goenv/versions dir
 # ======================================================================
 
 [aws]
@@ -25,6 +26,10 @@ possible_values = ["prod1", "prod2"]
 # target_var = "TFENV_TERRAFORM_VERSION"
 # possible_values = ["1.0.0", "0.1.1"]
 
+# [goenv]
+# external_config = true # true -> read versions from ~/.goenv/versions
+# target_var = "GOENV_VERSION"
+# possible_values = ["1.18.0", "1.19.1"]
 
 # ======================================================================
 # User-defined Config Selectors

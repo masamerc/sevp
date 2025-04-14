@@ -92,6 +92,7 @@ default = "aws"
 # - aws: source settings from ~/.aws/config for AWS_PROFILE
 # - docker-context: source settings from ~/.docker/contexts/meta dir
 # - tfenv: source settings from ~/.tfenv/versions dir
+# - goenv: source settings from ~/.goenv/versions dir
 # ======================================================================
 
 [aws]
@@ -100,15 +101,19 @@ target_var = "AWS_PROFILE"
 possible_values = ["prod1", "prod2"]
 
 [docker-context]
-external_config = true # true -> read contexts from ~/.docker/contexts/meta
+external_config = true
 target_var = "DOCKER_CONTEXT"
 possible_values = ["default", "sample1", "sample2"]
 
 [tfenv]
-external_config = true # true -> read versions from ~/.tfenv/versions
+external_config = true
 target_var = "TFENV_TERRAFORM_VERSION"
 possible_values = ["1.0.0", "0.1.1"]
 
+[goenv]
+external_config = true
+target_var = "GOENV_VERSION"
+possible_values = ["1.18.0", "1.19.1"]
 
 # ======================================================================
 # User-defined Config Selectors
@@ -146,6 +151,12 @@ External Config Providers allow SEVP to dynamically fetch values from external c
    - Automatically sets the `TFENV_TERRAFORM_VERSION` environment variable.
    - Enable by setting `external_config = true` in the `[tfenv]` section.
 
+- **goenv**  
+   - Support for https://github.com/go-nv/goenv.  
+   - Reads Go versions from `~/.goenv/versions`.
+   - Automatically sets the `GOENV_VERSION` environment variable.
+   - Enable by setting `external_config = true` in the `[goenv]` section.
+
 #### How It Works:
 - When `external_config = true`, SEVP ignores the `possible_values` field and dynamically fetches values from the external configuration.
 - This ensures SEVP stays in sync with changes made outside the tool.
@@ -163,6 +174,10 @@ target_var = "DOCKER_CONTEXT"
 [tfenv]
 external_config = true
 target_var = "TFENV_TERRAFORM_VERSION"
+
+[goenv]
+external_config = true
+target_var = "GOENV_VERSION"
 ```
 
 ## Installation
