@@ -100,12 +100,12 @@ target_var = "AWS_PROFILE"
 possible_values = ["prod1", "prod2"]
 
 [docker-context]
-external_config = true
+external_config = true # true -> read contexts from ~/.docker/contexts/meta
 target_var = "DOCKER_CONTEXT"
 possible_values = ["default", "sample1", "sample2"]
 
 [tfenv]
-external_config = true
+external_config = true # true -> read versions from ~/.tfenv/versions
 target_var = "TFENV_TERRAFORM_VERSION"
 possible_values = ["1.0.0", "0.1.1"]
 
@@ -130,15 +130,21 @@ possible_values = ["val1", "val2"]
 External Config Providers allow SEVP to dynamically fetch values from external configuration files or directories. This is useful for tools like AWS CLI or Docker.
 
 #### Supported Providers:
-1. **AWS**  
+- **AWS**  
    - Reads profiles from `~/.aws/config`.
    - Automatically sets the `AWS_PROFILE` environment variable.
    - Enable by setting `external_config = true` in the `[aws]` section.
 
-2. **Docker Context**  
+- **Docker Context**  
    - Reads contexts from `~/.docker/contexts/meta`.
    - Automatically sets the `DOCKER_CONTEXT` environment variable.
    - Enable by setting `external_config = true` in the `[docker-context]` section.
+
+- **tfenv**
+   - Support for https://github.com/tfutils/tfenv. 
+   - Reads versions from `~/.tfenv/versions`.
+   - Automatically sets the `TFENV_TERRAFORM_VERSION` environment variable.
+   - Enable by setting `external_config = true` in the `[tfenv]` section.
 
 #### How It Works:
 - When `external_config = true`, SEVP ignores the `possible_values` field and dynamically fetches values from the external configuration.
