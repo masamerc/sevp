@@ -2,6 +2,9 @@
 
 ![SEVP](./assets/sevp.png)
 
+![RELEASE](https://img.shields.io/github/release/masamerc/sevp.svg)
+![CI](https://github.com/masamerc/sevp/actions/workflows/ci.yml/badge.svg)
+
 SEVP is a lightweight CLI/TUI tool designed to simplify switching between environment variable values. 
 
 ![SEVP_DEMO](./assets/sevp-demo.gif)
