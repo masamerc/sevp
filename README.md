@@ -66,8 +66,13 @@ Displays the configuration for a specific target—shows the `target_var` and it
 
 ## Configuration
 
-### Custom configuration
+### Custom configuration: `~/.config/sevp.toml`
+
 You can use a configuration file to define your own environment variables and the values you want to switch between.
+
+ `sevp` will look for the config file in the following locations (in order of precedence):
+- `$HOME/.config/sevp.toml`
+- `$HOME/sevp.toml`
 
 Here’s a sample config: 
 
@@ -83,7 +88,7 @@ default = "aws"
 # external config provider has a special option called `read_config` 
 # if true, it will read profiles from ~/.aws/config
 read_config = false 
-# if read_config = true, the following options are ignored
+# if read_config = true, the following options will have no effect
 target_var = "AWS_PROFILE"
 possible_values = ["prod1", "prod2"]
 
@@ -103,11 +108,7 @@ possible_values = ["val1", "val2"]
 
 ```
 
- `sevp` will look for the config file in the following locations (in order of precedence):
-- `$HOME/.config/sevp.toml`
-- `$HOME/sevp.toml`
 
-Anatomy of the config file:
 - `default`: Specifies the default target to use when no argument is provided to `sevp`.
 - Each section (e.g., `[aws]`, `[google_cloud]`) defines a **target**.
   - The `[aws]` target supports `read_config = true` to auto-load profiles from `~/.aws/config`.
