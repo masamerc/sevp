@@ -15,7 +15,7 @@ read -p "Press [ENTER] to continue or [CTRL+C] to cancel..."
 # set the repo, release tag, and binary path
 BIN_NAME="sevp"
 REPO="masamerc/sevp"
-RELEASE_BRANCH="pre-release"
+RELEASE_BRANCH="main"
 RELEASE=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" | grep "tag_name" | cut -d '"' -f 4)
 RELEASE_WITHOUT_V=${RELEASE:1}
 INSTALL_DIR="/usr/local/bin/"
