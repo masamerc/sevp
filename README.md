@@ -206,7 +206,7 @@ target_var = "GOENV_VERSION"
 
 1. Run the one-liner:
    ```bash
-   $ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/pre-release/scripts/install.sh | bash
+   $ curl -sSL https://raw.githubusercontent.com/masamerc/sevp/main/scripts/install.sh | bash
    ```
 
 2. Add the shellhook to your shell configuration (`.zshrc` / `.bashrc`):
