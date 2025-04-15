@@ -13,7 +13,7 @@ import (
 // rootCmd represents the base command
 var rootCmd = &cobra.Command{
 	Use:     "sevp [command]",
-	Version: "1.0.0",
+	Version: "1.0.1",
 	Short:   "sevp: simple environment variable picker",
 	Args: cobra.MatchAll(
 		cobra.MinimumNArgs(0),
