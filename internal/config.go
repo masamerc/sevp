@@ -158,7 +158,7 @@ func GetSelector(args []string) (Selector, error) {
 
 	section, err := FromConfig(selectorName)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse selectors: %w", err)
+		return nil, err
 	}
 
 	// If the selector is an external config provider,

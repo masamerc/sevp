@@ -13,7 +13,7 @@ import (
 // rootCmd represents the base command
 var rootCmd = &cobra.Command{
 	Use:     "sevp [command]",
-	Version: "1.0.0",
+	Version: "1.0.1",
 	Short:   "sevp: simple environment variable picker",
 	Args: cobra.MatchAll(
 		cobra.MinimumNArgs(0),
@@ -26,18 +26,18 @@ var rootCmd = &cobra.Command{
 func runRoot(cmd *cobra.Command, args []string) error {
 	selector, err := internal.GetSelector(args)
 	if err != nil {
-		return fmt.Errorf("failed to get selector: %w", err)
+		return err
 	}
 
 	targetVar, possibleValues, err := selector.Read()
 	if err != nil {
-		return fmt.Errorf("failed to parse selectors: %w", err)
+		return err
 	}
 
 	app := app.NewApp(possibleValues, targetVar)
 
 	if err := app.Run(); err != nil {
-		return fmt.Errorf("failed to run app: %w", err)
+		return err
 	}
 
 	return nil
@@ -46,7 +46,6 @@ func runRoot(cmd *cobra.Command, args []string) error {
 // Execute is the main entry point for the CLI application.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
