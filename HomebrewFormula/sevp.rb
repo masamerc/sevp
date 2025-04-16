@@ -1,21 +1,21 @@
 class Sevp < Formula
   desc "A lightweight TUI for seamlessly switching environment variable values."
   homepage "https://github.com/masamerc/sevp"
-  version "1.0.2"
+  version "1.0.3"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/masamerc/sevp/releases/download/v1.0.2/sevp_1.0.2_darwin_arm64.tar.gz"
-      sha256 "71ce318f96e0b7cbfc9b3ad68a3b51a18750f66915ae5febc79bbfdae326dd4b"
+      url "https://github.com/masamerc/sevp/releases/download/v1.0.3/sevp_1.0.3_darwin_arm64.tar.gz"
+      sha256 "15632f44b3c9fd06dfe3db2924add5a83a2be0fc33f4795d6aa703bf864ae925"
 
       def install
         bin.install "sevp"
       end
     end
     on_intel do
-      url "https://github.com/masamerc/sevp/releases/download/v1.0.2/sevp_1.0.2_darwin_amd64.tar.gz"
-      sha256 "126f09d74d1cc340b5aec27c5022eaa0eca78ee594122bcf201478c9549d051c"
+      url "https://github.com/masamerc/sevp/releases/download/v1.0.3/sevp_1.0.3_darwin_amd64.tar.gz"
+      sha256 "96a5f87a33bf82c487a3091dfa28ceb5491273f65d797b448aaed823ca9aa70c"
 
       def install
         bin.install "sevp"
@@ -25,16 +25,16 @@ class Sevp < Formula
 
   on_linux do
     on_arm do
-      url "https://github.com/masamerc/sevp/releases/download/v1.0.2/sevp_1.0.2_linux_arm64.tar.gz"
-      sha256 "228eae1df5e49f0a70078a34a22da0e22fd0256e56b6bce78b7b6b23dea132c5"
+      url "https://github.com/masamerc/sevp/releases/download/v1.0.3/sevp_1.0.3_linux_arm64.tar.gz"
+      sha256 "d6fb43962d607c18d6d103b135d704689dbab3786c2491ea578404840286cf32"
 
       def install
         bin.install "sevp"
       end
     end
     on_intel do
-      url "https://github.com/masamerc/sevp/releases/download/v1.0.2/sevp_1.0.2_linux_amd64.tar.gz"
-      sha256 "2f88f720027270d2309933f9fc7f3937da5cb5e5da3d2ca13d2c421bfb0f71c2"
+      url "https://github.com/masamerc/sevp/releases/download/v1.0.3/sevp_1.0.3_linux_amd64.tar.gz"
+      sha256 "b1125d06cd361c1d323da8a5791a2fa7c0ec48069d44e3fd2f432c65e156a31f"
 
       def install
         bin.install "sevp"
