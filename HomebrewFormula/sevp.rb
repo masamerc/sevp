@@ -7,7 +7,7 @@ class Sevp < Formula
   on_macos do
     on_arm do
       url "https://github.com/masamerc/sevp/releases/download/v1.0.2/sevp_1.0.2_darwin_arm64.tar.gz"
-      sha256 "f6ee4c99c17ffc7f370ef8a2c2aa1b3603980d6514342e78c778f34f8be179c4"
+      sha256 "71ce318f96e0b7cbfc9b3ad68a3b51a18750f66915ae5febc79bbfdae326dd4b"
 
       def install
         bin.install "sevp"
@@ -15,7 +15,7 @@ class Sevp < Formula
     end
     on_intel do
       url "https://github.com/masamerc/sevp/releases/download/v1.0.2/sevp_1.0.2_darwin_amd64.tar.gz"
-      sha256 "b95ac38181319fadfe569ea9d7571e972c71404cacee49888483430e21879435"
+      sha256 "126f09d74d1cc340b5aec27c5022eaa0eca78ee594122bcf201478c9549d051c"
 
       def install
         bin.install "sevp"
@@ -26,7 +26,7 @@ class Sevp < Formula
   on_linux do
     on_arm do
       url "https://github.com/masamerc/sevp/releases/download/v1.0.2/sevp_1.0.2_linux_arm64.tar.gz"
-      sha256 "f94eb07a52ef0c5c1179399581866f68cfd04e2081993e026ea7a0539c957d8b"
+      sha256 "228eae1df5e49f0a70078a34a22da0e22fd0256e56b6bce78b7b6b23dea132c5"
 
       def install
         bin.install "sevp"
@@ -34,7 +34,7 @@ class Sevp < Formula
     end
     on_intel do
       url "https://github.com/masamerc/sevp/releases/download/v1.0.2/sevp_1.0.2_linux_amd64.tar.gz"
-      sha256 "a2d1055de9d12d2019be1dafb05af588ab1bc7df0631b27866ec61612d09a6d6"
+      sha256 "2f88f720027270d2309933f9fc7f3937da5cb5e5da3d2ca13d2c421bfb0f71c2"
 
       def install
         bin.install "sevp"
