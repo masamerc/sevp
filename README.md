@@ -78,9 +78,7 @@ This command displays the configuration for a specific target, including the `ta
 
 ### Custom Configuration: `~/.config/sevp.toml`
 
-SEVP uses a configuration file to define environment variables and their possible values. It looks for the config file in the following locations (in order of precedence):
-1. `$HOME/.config/sevp.toml` (default location)
-2. `$HOME/sevp.toml`
+SEVP uses a configuration file to define environment variables and their possible values: `$HOME/.config/sevp.toml`
 
 Here’s an example configuration:
 
