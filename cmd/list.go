@@ -2,15 +2,21 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"sort"
 
+	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 
+	"github.com/masamerc/sevp/app"
 	"github.com/masamerc/sevp/internal"
 )
 
 func init() {
 	rootCmd.AddCommand(listCmd)
+
+	// quite flag: quiet mode
+	rootCmd.PersistentFlags().BoolP("quiet", "q", false, "hide target variables and their current values")
 }
 
 // listCmd lists all selectors in the config.
@@ -35,11 +41,44 @@ func runList(cmd *cobra.Command, args []string) {
 		selectorSlice = append(selectorSlice, s)
 	}
 
-	// sort the selectors since the map order is not guaranteed
+	// Sort the selectors since the map order is not guaranteed
 	sorted := sort.StringSlice(selectorSlice)
 	sort.Sort(sorted)
 
+	// Quite mode will just print the selectors
+	if quiet, _ := cmd.Flags().GetBool("quiet"); quiet {
+		for _, s := range sorted {
+			fmt.Fprintln(cmd.OutOrStdout(), s)
+		}
+		return
+	}
+
+	// Styling
+	purpleStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(app.HexBrightPurple))
+	greenStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color(app.HexBrightGreen))
+
+	// Calculate max width for padding;w
+	maxWidth := 0
 	for _, s := range sorted {
-		fmt.Fprintln(cmd.OutOrStdout(), s)
+		if len(s) > maxWidth {
+			maxWidth = len(s)
+		}
+	}
+	maxWidth += 2
+
+	for _, s := range sorted {
+		currentSelector := selectorMap[s]
+		currentTargetVar := currentSelector.TargetVar
+		currentValue := os.Getenv(currentTargetVar)
+
+		paddedName := fmt.Sprintf("%-*s", maxWidth, s) // left-aligned to width
+		// nameStyled := purpleStyle.Render(paddedName)
+		currentStyled := fmt.Sprintf(
+			"(current: %v = %v)",
+			purpleStyle.Render(currentTargetVar),
+			greenStyle.Render(currentValue),
+		)
+
+		fmt.Fprintf(cmd.OutOrStdout(), "%s %s\n", paddedName, currentStyled)
 	}
 }
