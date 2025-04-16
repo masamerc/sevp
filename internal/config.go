@@ -67,7 +67,8 @@ func InitConfig() error {
 	if err := parseConfig(); err != nil {
 
 		// if no config file is found, create a default one
-		if err == err.(viper.ConfigFileNotFoundError) {
+		var configErr viper.ConfigFileNotFoundError
+		if errors.As(err, &configErr) {
 			slog.Debug("Config file not found, creating default config")
 			err := createDefaultConfig()
 			return err
@@ -123,10 +124,7 @@ func parseConfig() error {
 	viper.SetConfigName("sevp") // No dot here, Viper automatically adds extensions
 	viper.SetConfigType("toml")
 
-	// Add both possible config paths
-	// the .config takes precedence over the home directory
 	viper.AddConfigPath(path.Join(home, ".config")) // $HOME/.config/sevp.toml
-	viper.AddConfigPath(home)                       // $HOME/sevp.toml
 
 	// Read in the config
 	if err := viper.ReadInConfig(); err != nil {
