@@ -1,7 +1,7 @@
 class Sevp < Formula
   desc "A lightweight TUI for seamlessly switching environment variable values."
   homepage "https://github.com/masamerc/sevp"
-  version "1.0.1"
+  version "1.0.2"
   license "MIT"
 
   on_macos do
