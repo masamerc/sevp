@@ -1,6 +1,6 @@
 module github.com/masamerc/sevp
 
-go 1.26
+go 1.24
 
 require (
 	github.com/charmbracelet/bubbles v0.18.0
