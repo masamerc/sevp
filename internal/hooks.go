@@ -7,7 +7,7 @@ var SupportedShells = []string{
 
 const ZshHook string = `function _sevp() {
     if [[ -f ~/.sevp ]]; then
-        eval "$(cat ~/.sevp)"
+        source ~/.sevp
     fi
 }
 
@@ -15,7 +15,7 @@ precmd_functions+=(_sevp)`
 
 const BashHook string = `function _sevp() {
     if [[ -f ~/.sevp ]]; then
-        eval "$(cat ~/.sevp)"
+        . ~/.sevp
     fi
 }
 
