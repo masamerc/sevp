@@ -30,7 +30,10 @@ for PLATFORM in "${PLATFORMS[@]}"; do
 
   echo "Updating $PLATFORM in formula..."
   sed -i.bak -E "s#(url \")[^\"]*${PLATFORM}.tar.gz\"#\1$URL\"#" "$FORMULA_PATH"
-  sed -i.bak -E "/${PLATFORM}.tar.gz\"/{n;s#(sha256 \")[^\"]*\"#\1$SHA256\"#}" "$FORMULA_PATH"
+  awk -v url="$URL" -v sha="$SHA256" '
+    next_is_sha && /sha256/ { sub(/sha256 "[^"]*"/, "sha256 \"" sha "\""); next_is_sha=0 }
+    { if (index($0, url)) next_is_sha=1; print }
+  ' "$FORMULA_PATH" > "$FORMULA_PATH.tmp" && mv "$FORMULA_PATH.tmp" "$FORMULA_PATH"
 done
 
 rm -f "$FORMULA_PATH.bak"
